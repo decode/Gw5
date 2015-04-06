@@ -1,6 +1,7 @@
 package edu.guet.jjhome.guetw5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -60,6 +61,7 @@ public class MainActivity extends ActionBarActivity
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
