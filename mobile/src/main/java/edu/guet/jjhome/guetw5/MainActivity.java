@@ -1,23 +1,22 @@
 package edu.guet.jjhome.guetw5;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
@@ -33,6 +32,11 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private Account mAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +50,26 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+        processView();
+    }
+
+    private void processView() {
+        Account[] accounts = AccountManager.get(this).getAccountsByType(Constants.MY_ACCOUNT_TYPE);
+        switch (accounts.length) {
+            case 0:
+                Toast.makeText(this, "You don't appear to be logged in to your device!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case 1:
+                Toast.makeText(this, "Welcome, " + mAccount.name, Toast.LENGTH_LONG).show();
+                mAccount = accounts[0];
+                break;
+            default:
+                break;
+        }
+
     }
 
     @Override
@@ -55,13 +79,24 @@ public class MainActivity extends ActionBarActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
+
+//        FragmentTransaction ft = fragmentManager.beginTransaction();
+//        switch (position) {
+//            case 0:
+//                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+//                ft.commit();
+//                break;
+//            case 1:
+//                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+//                ft.commit();
+//                break;
+//        }
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
-                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
