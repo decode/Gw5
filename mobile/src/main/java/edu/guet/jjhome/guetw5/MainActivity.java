@@ -4,9 +4,11 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, OverviewFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -76,21 +78,21 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+//                .commit();
 
-//        FragmentTransaction ft = fragmentManager.beginTransaction();
-//        switch (position) {
-//            case 0:
-//                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
-//                ft.commit();
-//                break;
-//            case 1:
-//                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
-//                ft.commit();
-//                break;
-//        }
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        switch (position) {
+            case 0:
+                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+                ft.commit();
+                break;
+            case 1:
+                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+                ft.commit();
+                break;
+        }
     }
 
     public void onSectionAttached(int number) {
@@ -141,6 +143,14 @@ public class MainActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Implement Overview fragment method
+     */
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**

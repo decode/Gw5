@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,9 @@ public class OverviewFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ListView listView;
+    private ItemAdapter itemAdapter;
+
+    private static final String ARG_SECTION_NUMBER = "section_number";
 
     /**
      * Use this factory method to create a new instance of
@@ -64,20 +67,28 @@ public class OverviewFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        ArrayList<String> myStringArray = new ArrayList<>();
-        myStringArray.add("a");
-        myStringArray.add("b");
-        myStringArray.add("c");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, myStringArray);
-        ListView listView = (ListView) getActivity().findViewById(R.id.listView);
-        listView.setAdapter(adapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_overview, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
+
+        ListView lv = (ListView) rootView.findViewById(R.id.listView);
+
+        ArrayList<Item> items = new ArrayList<>();
+        Item i1 = new Item(1, "sender1", "content1", 1);
+        Item i2 = new Item(2, "sender2", "content2", 1);
+        Item i3 = new Item(3, "sender3", "content3", 1);
+        items.add(i1);
+        items.add(i2);
+        items.add(i3);
+
+        itemAdapter = new ItemAdapter(getActivity().getBaseContext(), R.layout.item, items);
+        lv.setAdapter(itemAdapter);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -90,6 +101,8 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        ((MainActivity) activity).onSectionAttached(
+                getArguments().getInt(ARG_SECTION_NUMBER));
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
