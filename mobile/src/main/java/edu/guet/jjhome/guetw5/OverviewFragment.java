@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -77,6 +75,12 @@ public class OverviewFragment extends Fragment {
 
         ListView lv = (ListView) rootView.findViewById(R.id.listView);
 
+//        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+//                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+//                "Linux", "OS/2" };
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, values);
+//        lv.setAdapter(adapter);
+
         ArrayList<Item> items = new ArrayList<>();
         Item i1 = new Item(1, "sender1", "content1", 1);
         Item i2 = new Item(2, "sender2", "content2", 1);
@@ -85,7 +89,7 @@ public class OverviewFragment extends Fragment {
         items.add(i2);
         items.add(i3);
 
-        itemAdapter = new ItemAdapter(getActivity().getBaseContext(), R.layout.item, items);
+        itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
         lv.setAdapter(itemAdapter);
 
         return rootView;
@@ -129,7 +133,7 @@ public class OverviewFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
 }
