@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Guetw5</string>
+    <string name="activity_profile">Profile</string>
+    <string name="activity_details">Messages</string>
     <string name="title_section1">Profile</string>
     <string name="title_section2">Message</string>
     <string name="title_section3">Private</string>

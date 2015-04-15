@@ -5,9 +5,11 @@ import java.util.Calendar;
 
 public class Item implements Serializable {
     private long id;
+    private long message_id;
     private String sender;
     private String content;
     private long sent_at;
+    private String source;
 
     public Item() {
         sender = "";
@@ -52,5 +54,21 @@ public class Item implements Serializable {
 
     public void setSent_at(long sent_at) {
         this.sent_at = sent_at;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public long getMessage_id() {
+        return message_id;
+    }
+
+    public void setMessage_id(long message_id) {
+        this.message_id = message_id;
     }
 }

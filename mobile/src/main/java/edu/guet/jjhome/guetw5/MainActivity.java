@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +21,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, OverviewFragment.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, OverviewFragment.OnItemSelectedListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -38,6 +37,9 @@ public class MainActivity extends ActionBarActivity
     private ActionBarDrawerToggle mDrawerToggle;
 
     private Account mAccount;
+
+
+    OverviewFragment overviewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +60,19 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void processView() {
-        Account[] accounts = AccountManager.get(this).getAccountsByType(Constants.MY_ACCOUNT_TYPE);
-        switch (accounts.length) {
-            case 0:
-                Toast.makeText(this, "You don't appear to be logged in to your device!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
-            case 1:
-                Toast.makeText(this, "Welcome, " + mAccount.name, Toast.LENGTH_LONG).show();
-                mAccount = accounts[0];
-                break;
-            default:
-                break;
-        }
+//        Account[] accounts = AccountManager.get(this).getAccountsByType(AppConstants.MY_ACCOUNT_TYPE);
+//        switch (accounts.length) {
+//            case 0:
+//                Toast.makeText(this, "You don't appear to be logged in to your device!", Toast.LENGTH_LONG).show();
+//                startActivity(new Intent(this, LoginActivity.class));
+//                break;
+//            case 1:
+//                Toast.makeText(this, "Welcome, " + mAccount.name, Toast.LENGTH_LONG).show();
+//                mAccount = accounts[0];
+//                break;
+//            default:
+//                break;
+//        }
 
     }
 
@@ -85,11 +87,11 @@ public class MainActivity extends ActionBarActivity
         FragmentTransaction ft = fragmentManager.beginTransaction();
         switch (position) {
             case 0:
-                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+                ft.replace(R.id.container, OverviewFragment.newInstance("a","11"));
                 ft.commit();
                 break;
             case 1:
-                ft.replace(R.id.container, OverviewFragment.newInstance("a","b"));
+                ft.replace(R.id.container, OverviewFragment.newInstance("b","22"));
                 ft.commit();
                 break;
         }
@@ -149,7 +151,7 @@ public class MainActivity extends ActionBarActivity
      * Implement Overview fragment method
      */
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onItemSelected(int position) {
 
     }
 

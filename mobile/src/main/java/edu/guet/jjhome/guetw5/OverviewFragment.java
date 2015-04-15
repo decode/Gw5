@@ -1,13 +1,16 @@
 package edu.guet.jjhome.guetw5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -15,7 +18,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OverviewFragment.OnFragmentInteractionListener} interface
+ * {@link OnItemSelectedListener} interface
  * to handle interaction events.
  * Use the {@link OverviewFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -30,11 +33,13 @@ public class OverviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnItemSelectedListener mListener;
 
     private ItemAdapter itemAdapter;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private int selectedCount = 0;
 
     /**
      * Use this factory method to create a new instance of
@@ -75,22 +80,33 @@ public class OverviewFragment extends Fragment {
 
         ListView lv = (ListView) rootView.findViewById(R.id.listView);
 
-//        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-//                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-//                "Linux", "OS/2" };
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, values);
-//        lv.setAdapter(adapter);
+        if(mParam1.equals("a")) {
+            ArrayList<Item> items = new ArrayList<>();
+            Item i1 = new Item(1, "sender1", "content1", 1);
+            Item i2 = new Item(2, "sender2", "content2", 1);
+            Item i3 = new Item(3, "sender3", "content3", 1);
+            items.add(i1);
+            items.add(i2);
+            items.add(i3);
 
-        ArrayList<Item> items = new ArrayList<>();
-        Item i1 = new Item(1, "sender1", "content1", 1);
-        Item i2 = new Item(2, "sender2", "content2", 1);
-        Item i3 = new Item(3, "sender3", "content3", 1);
-        items.add(i1);
-        items.add(i2);
-        items.add(i3);
+            itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
+            lv.setAdapter(itemAdapter);
+        }
 
-        itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
-        lv.setAdapter(itemAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item item = itemAdapter.getItem(position);
+                if(selectedCount > 0) {
+
+                }
+                else {
+                    Intent intent = new Intent(".Details");
+                    intent.putExtra("item", item);
+                    startActivity(intent);
+                }
+            }
+        });
 
         return rootView;
     }
@@ -98,7 +114,7 @@ public class OverviewFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+//            mListener.onItemSelected(uri);
         }
     }
 
@@ -108,7 +124,7 @@ public class OverviewFragment extends Fragment {
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnItemSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -131,9 +147,13 @@ public class OverviewFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnItemSelectedListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onItemSelected(int position);
+    }
+
+    public void onItemClick(View v, int position) {
+        mListener.onItemSelected(position);
     }
 
 }
