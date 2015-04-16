@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,9 +31,14 @@ public class OverviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String ARG_TYPE = "type";
+    private static final String ARG_PARAM = "items";
+
+
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String param_type;
     private String mParam2;
+    private ArrayList<Item> items;
 
     private OnItemSelectedListener mListener;
 
@@ -41,20 +48,14 @@ public class OverviewFragment extends Fragment {
 
     private int selectedCount = 0;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OverviewFragment.
-     */
+    private Handler handler;
+    private TextView txt_status;
+
     // TODO: Rename and change types and number of parameters
-    public static OverviewFragment newInstance(String param1, String param2) {
+    public static OverviewFragment newInstance(String view_type) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_TYPE, view_type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,9 +68,13 @@ public class OverviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            param_type = getArguments().getString(ARG_TYPE);
         }
+
+        ArrayList<Item> items = new ArrayList<>();
+        itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
+
+        handler = new Handler(new MsgHandler());
     }
 
     @Override
@@ -79,17 +84,17 @@ public class OverviewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
         ListView lv = (ListView) rootView.findViewById(R.id.listView);
+        txt_status = (TextView) rootView.findViewById(R.id.text_status);
 
-        if(mParam1.equals("a")) {
-            ArrayList<Item> items = new ArrayList<>();
-            Item i1 = new Item(1, "sender1", "content1", 1);
-            Item i2 = new Item(2, "sender2", "content2", 1);
-            Item i3 = new Item(3, "sender3", "content3", 1);
-            items.add(i1);
-            items.add(i2);
-            items.add(i3);
+        if(param_type.equals("person")) {
+//            ArrayList<Item> items = new ArrayList<>();
+//            Item i1 = new Item(1, "sender1", "content1", 1);
+//            Item i2 = new Item(2, "sender2", "content2", 1);
+//            Item i3 = new Item(3, "sender3", "content3", 1);
+//            items.add(i1);
+//            items.add(i2);
+//            items.add(i3);
 
-            itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
             lv.setAdapter(itemAdapter);
         }
 
@@ -156,4 +161,21 @@ public class OverviewFragment extends Fragment {
         mListener.onItemSelected(position);
     }
 
+    private class MsgHandler implements Handler.Callback {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case AppConstants.STAGE_LOGIN:
+                    break;
+                case AppConstants.STAGE_GET_PAGE:
+                    txt_status.setText("updating...");
+                    txt_status.setVisibility(View.VISIBLE);
+                    break;
+                case AppConstants.STAGE_GET_ERROR:
+                    break;
+
+            }
+            return false;
+        }
+    }
 }

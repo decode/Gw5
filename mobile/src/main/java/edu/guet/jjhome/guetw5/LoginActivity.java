@@ -283,9 +283,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 }
             }
 
-            final Account account = new Account(mEmail, AppConstants.MY_ACCOUNT_TYPE);
-            AccountManager am = AccountManager.get(LoginActivity.this);
-            am.addAccountExplicitly(account, mPassword, null);
             // TODO: register the new account here.
             return true;
         }

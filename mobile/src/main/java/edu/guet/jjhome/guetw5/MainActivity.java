@@ -1,9 +1,7 @@
 package edu.guet.jjhome.guetw5;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity
@@ -84,14 +84,23 @@ public class MainActivity extends ActionBarActivity
 //                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
 //                .commit();
 
+//        ArrayList<Item> items = new ArrayList<>();
+//        Item i1 = new Item(1, "sender1", "content1", 1);
+//        Item i2 = new Item(2, "sender2", "content2", 1);
+//        Item i3 = new Item(3, "sender3", "content3", 1);
+//        items.add(i1);
+//        items.add(i2);
+//        items.add(i3);
+
         FragmentTransaction ft = fragmentManager.beginTransaction();
         switch (position) {
             case 0:
-                ft.replace(R.id.container, OverviewFragment.newInstance("a","11"));
+                Toast.makeText(this, "Welcome, ", Toast.LENGTH_LONG).show();
+                ft.replace(R.id.container, OverviewFragment.newInstance("person"));
                 ft.commit();
                 break;
             case 1:
-                ft.replace(R.id.container, OverviewFragment.newInstance("b","22"));
+                ft.replace(R.id.container, OverviewFragment.newInstance("public"));
                 ft.commit();
                 break;
         }
@@ -142,6 +151,11 @@ public class MainActivity extends ActionBarActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_refresh) {
+            Toast.makeText(this, "Fetch content.", Toast.LENGTH_SHORT).show();
+
         }
 
         return super.onOptionsItemSelected(item);
