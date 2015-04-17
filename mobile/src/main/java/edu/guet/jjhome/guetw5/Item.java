@@ -5,16 +5,26 @@ import java.util.Calendar;
 
 public class Item implements Serializable {
     private long id;
-    private long message_id;
+    private String message_id; // record message unique code
+    private String source; // record url
+    private String msg_status;
     private String sender;
+    private String receiver;
     private String content;
     private long sent_at;
-    private String source;
+    private String emergency;
+    private String importance;
 
     public Item() {
+        message_id = "";
+        source = "";
+        msg_status = "";
         sender = "";
+        receiver = "";
         content = "";
         sent_at = Calendar.getInstance().getTimeInMillis();
+        emergency = "";
+        importance = "";
     }
 
     public Item(long id, String sender, String content, long sent_at) {
@@ -64,11 +74,43 @@ public class Item implements Serializable {
         this.source = source;
     }
 
-    public long getMessage_id() {
+    public String getMessage_id() {
         return message_id;
     }
 
-    public void setMessage_id(long message_id) {
+    public void setMessage_id(String message_id) {
         this.message_id = message_id;
+    }
+
+    public String getEmergency() {
+        return emergency;
+    }
+
+    public void setEmergency(String emergency) {
+        this.emergency = emergency;
+    }
+
+    public String getImportance() {
+        return importance;
+    }
+
+    public void setImportance(String importance) {
+        this.importance = importance;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getMsg_status() {
+        return msg_status;
+    }
+
+    public void setMsg_status(String msg_status) {
+        this.msg_status = msg_status;
     }
 }

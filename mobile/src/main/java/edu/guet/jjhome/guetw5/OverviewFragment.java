@@ -1,18 +1,24 @@
 package edu.guet.jjhome.guetw5;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -50,6 +56,7 @@ public class OverviewFragment extends Fragment {
 
     private Handler handler;
     private TextView txt_status;
+    private ListView lv_items;
 
     // TODO: Rename and change types and number of parameters
     public static OverviewFragment newInstance(String view_type) {
@@ -71,6 +78,8 @@ public class OverviewFragment extends Fragment {
             param_type = getArguments().getString(ARG_TYPE);
         }
 
+        setHasOptionsMenu(true);
+
         ArrayList<Item> items = new ArrayList<>();
         itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
 
@@ -83,29 +92,20 @@ public class OverviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.listView);
+        lv_items = (ListView) rootView.findViewById(R.id.listView);
         txt_status = (TextView) rootView.findViewById(R.id.text_status);
 
         if(param_type.equals("person")) {
-//            ArrayList<Item> items = new ArrayList<>();
-//            Item i1 = new Item(1, "sender1", "content1", 1);
-//            Item i2 = new Item(2, "sender2", "content2", 1);
-//            Item i3 = new Item(3, "sender3", "content3", 1);
-//            items.add(i1);
-//            items.add(i2);
-//            items.add(i3);
-
-            lv.setAdapter(itemAdapter);
+            lv_items.setAdapter(itemAdapter);
         }
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv_items.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Item item = itemAdapter.getItem(position);
-                if(selectedCount > 0) {
+                if (selectedCount > 0) {
 
-                }
-                else {
+                } else {
                     Intent intent = new Intent(".Details");
                     intent.putExtra("item", item);
                     startActivity(intent);
@@ -173,9 +173,40 @@ public class OverviewFragment extends Fragment {
                     break;
                 case AppConstants.STAGE_GET_ERROR:
                     break;
+                case AppConstants.STAGE_GET_SUCCESS:
+                    txt_status.setVisibility(View.INVISIBLE);
+                    break;
 
             }
             return false;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.overview, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_overview_refresh) {
+            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
+            WebService web = new WebService(getActivity().getBaseContext(), handler);
+            web.fetchContent(itemAdapter);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

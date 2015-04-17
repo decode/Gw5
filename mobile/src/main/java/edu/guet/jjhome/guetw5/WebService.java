@@ -14,16 +14,20 @@ import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class WebService {
 
     String login_url = "http://guetw5.myclub2.com/Account/LogOn";
     String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";
+    String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
 
     private AsyncHttpClient client;
 
     private Context context;
     private Handler handler;
+
+    private String response;
 
     public WebService(Context context, Handler handler) {
         client = new AsyncHttpClient();
@@ -91,7 +95,52 @@ public class WebService {
         });
     }
 
-    public void fetchContent() {
+    /**
+     * TODO: parse next page to the end.
+     * @param adapter
+     */
+    public void fetchContent(final ItemAdapter adapter) {
+        client.get(person_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+                Log.d("Fetching...", "get page data");
+                Message msg = Message.obtain();
+                msg.what = AppConstants.STAGE_GET_PAGE;
+                handler.sendMessage(msg);
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    Log.d("Finished fetching", "get page data success");
 
+                    WebParser parser = new WebParser(response);
+                    ArrayList<Item> items = parser.parseItemList();
+                    adapter.clear();
+                    adapter.addAll(items);
+                    adapter.notifyDataSetChanged();
+
+                    Message msg = Message.obtain();
+                    msg.what = AppConstants.STAGE_GET_SUCCESS;
+                    handler.sendMessage(msg);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Log.d("HTML Result", response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                String result = null;
+                try {
+                    result = new String(responseBody, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Log.d("HTML Error Result", result);
+            }
+        });
     }
 }

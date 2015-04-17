@@ -96,11 +96,11 @@ public class MainActivity extends ActionBarActivity
         switch (position) {
             case 0:
                 Toast.makeText(this, "Welcome, ", Toast.LENGTH_LONG).show();
-                ft.replace(R.id.container, OverviewFragment.newInstance("person"));
+                ft.add(R.id.container, OverviewFragment.newInstance("person"));
                 ft.commit();
                 break;
             case 1:
-                ft.replace(R.id.container, OverviewFragment.newInstance("public"));
+                ft.add(R.id.container, OverviewFragment.newInstance("public"));
                 ft.commit();
                 break;
         }
@@ -134,7 +134,7 @@ public class MainActivity extends ActionBarActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
+            getMenuInflater().inflate(R.menu.global, menu);
             restoreActionBar();
             return true;
         }
@@ -152,12 +152,6 @@ public class MainActivity extends ActionBarActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
-        if (id == R.id.action_refresh) {
-            Toast.makeText(this, "Fetch content.", Toast.LENGTH_SHORT).show();
-
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

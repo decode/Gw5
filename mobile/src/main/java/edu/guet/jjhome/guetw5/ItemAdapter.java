@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ItemAdapter extends ArrayAdapter<Item> {
@@ -42,7 +45,9 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         if (p != null) {
             viewHolder.tSender.setText(p.getSender());
             viewHolder.tContent.setText(p.getContent());
-            viewHolder.tSent_at.setText(String.valueOf(p.getSent_at()));
+            DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
+            Date d = new Date(p.getSent_at());
+            viewHolder.tSent_at.setText(df.format(d));
         }
 
         return convertView;
