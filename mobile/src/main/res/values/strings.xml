@@ -4,9 +4,16 @@
     <string name="app_name">Guetw5</string>
     <string name="activity_profile">Profile</string>
     <string name="activity_details">Messages</string>
-    <string name="title_section1">Profile</string>
-    <string name="title_section2">Message</string>
-    <string name="title_section3">Private</string>
+    <string name="nav_item_message">Message</string>
+    <string name="nav_item_public">Public</string>
+    <string name="nav_item_outbox">Outbox</string>
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_message</item>
+        <item>@string/nav_item_public</item>
+        <item>@string/nav_item_outbox</item>
+    </string-array>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_refresh">Refresh</string>

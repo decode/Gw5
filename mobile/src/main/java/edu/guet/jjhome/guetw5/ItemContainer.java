@@ -2,6 +2,8 @@ package edu.guet.jjhome.guetw5;
 
 import java.util.ArrayList;
 
+import edu.guet.jjhome.guetw5.model.Item;
+
 public class ItemContainer {
     public int count;
     public ArrayList<Item> items = new ArrayList<>();

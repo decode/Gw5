@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+
+import edu.guet.jjhome.guetw5.R;
 
 public class ProfileActivity extends PreferenceActivity {
 

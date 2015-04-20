@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.model;
 
 import java.io.Serializable;
 import java.util.Calendar;

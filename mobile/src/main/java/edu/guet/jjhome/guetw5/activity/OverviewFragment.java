@@ -1,10 +1,7 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,35 +19,18 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.R;
+import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
+import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.util.WebService;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnItemSelectedListener} interface
- * to handle interaction events.
- * Use the {@link OverviewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OverviewFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private static final String ARG_TYPE = "type";
-    private static final String ARG_PARAM = "items";
 
-
-    // TODO: Rename and change types of parameters
-    private String param_type;
-    private String mParam2;
-    private ArrayList<Item> items;
-
-    private OnItemSelectedListener mListener;
+    private int param_type;
 
     private ItemAdapter itemAdapter;
-
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private int selectedCount = 0;
 
@@ -59,10 +39,10 @@ public class OverviewFragment extends Fragment {
     private ListView lv_items;
 
     // TODO: Rename and change types and number of parameters
-    public static OverviewFragment newInstance(String view_type) {
+    public static OverviewFragment newInstance(int view_type) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TYPE, view_type);
+        args.putInt(ARG_TYPE, view_type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +55,7 @@ public class OverviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            param_type = getArguments().getString(ARG_TYPE);
+            param_type = getArguments().getInt(ARG_TYPE);
         }
 
         setHasOptionsMenu(true);
@@ -95,9 +75,7 @@ public class OverviewFragment extends Fragment {
         lv_items = (ListView) rootView.findViewById(R.id.listView);
         txt_status = (TextView) rootView.findViewById(R.id.text_status);
 
-        if(param_type.equals("person")) {
-            lv_items.setAdapter(itemAdapter);
-        }
+        lv_items.setAdapter(itemAdapter);
 
         lv_items.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -116,49 +94,23 @@ public class OverviewFragment extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-//            mListener.onItemSelected(uri);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-        try {
-            mListener = (OnItemSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        ((MainActivity) activity).onSectionAttached(
+//                getArguments().getInt(ARG_SECTION_NUMBER));
+//        try {
+//            mListener = (OnItemSelectedListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnItemSelectedListener {
-        // TODO: Update argument type and name
-        void onItemSelected(int position);
-    }
-
-    public void onItemClick(View v, int position) {
-        mListener.onItemSelected(position);
+//        mListener = null;
     }
 
     private class MsgHandler implements Handler.Callback {
@@ -172,11 +124,15 @@ public class OverviewFragment extends Fragment {
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_ERROR:
+                    txt_status.setText("Get page error, please check your web connection");
+                    txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
                     txt_status.setVisibility(View.INVISIBLE);
                     break;
-
+                case AppConstants.STAGE_NOT_LOGIN:
+                    txt_status.setText("You are not login. Please re-login");
+                    txt_status.setVisibility(View.VISIBLE);
             }
             return false;
         }
@@ -204,7 +160,7 @@ public class OverviewFragment extends Fragment {
         if (id == R.id.action_overview_refresh) {
             Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
             WebService web = new WebService(getActivity().getBaseContext(), handler);
-            web.fetchContent(itemAdapter);
+            web.fetchContent(param_type ,itemAdapter);
         }
 
         return super.onOptionsItemSelected(item);

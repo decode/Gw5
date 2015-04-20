@@ -1,7 +1,5 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.activity;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -30,6 +28,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.guet.jjhome.guetw5.R;
 
 
 /**

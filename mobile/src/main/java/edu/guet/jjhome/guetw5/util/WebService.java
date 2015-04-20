@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.util;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
+import edu.guet.jjhome.guetw5.model.Item;
 
 public class WebService {
 
@@ -99,8 +103,17 @@ public class WebService {
      * TODO: parse next page to the end.
      * @param adapter
      */
-    public void fetchContent(final ItemAdapter adapter) {
-        client.get(person_url, new AsyncHttpResponseHandler() {
+    public void fetchContent(final int conent_type, final ItemAdapter adapter) {
+        String dest_url = "";
+        switch (conent_type) {
+            case AppConstants.NOTICE_PUBLIC:
+                dest_url = common_url;
+                break;
+            case AppConstants.NOTICE_ALL:
+                dest_url = person_url;
+                break;
+        }
+        client.get(dest_url, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started
@@ -113,17 +126,30 @@ public class WebService {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     response = new String(responseBody, "UTF-8");
-                    Log.d("Finished fetching", "get page data success");
-
-                    WebParser parser = new WebParser(response);
-                    ArrayList<Item> items = parser.parseItemList();
-                    adapter.clear();
-                    adapter.addAll(items);
-                    adapter.notifyDataSetChanged();
-
                     Message msg = Message.obtain();
-                    msg.what = AppConstants.STAGE_GET_SUCCESS;
-                    handler.sendMessage(msg);
+                    Log.d("Finished fetching", "get page data success");
+                    if (isLogin(response)) {
+                        WebParser parser = new WebParser(response);
+                        ArrayList<Item> items;
+                        if (conent_type == AppConstants.NOTICE_ALL) {
+                            items = parser.parseItemList();
+                        }
+                        else {
+                            items = parser.parseCommonList();
+                        }
+                        adapter.clear();
+                        adapter.addAll(items);
+                        adapter.notifyDataSetChanged();
+
+                        msg.what = AppConstants.STAGE_GET_SUCCESS;
+                        handler.sendMessage(msg);
+                    }
+                    else {
+                        Log.d("Fetch unsuccessful", "not login");
+                        msg = Message.obtain();
+                        msg.what = AppConstants.STAGE_NOT_LOGIN;
+                        handler.sendMessage(msg);
+                    }
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -142,5 +168,9 @@ public class WebService {
                 Log.d("HTML Error Result", result);
             }
         });
+    }
+
+    public boolean isLogin(String response) {
+        return !response.contains("用户名：") && response.contains("密　码：");
     }
 }

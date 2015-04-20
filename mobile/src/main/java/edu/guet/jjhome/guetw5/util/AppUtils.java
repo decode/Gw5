@@ -1,7 +1,9 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import edu.guet.jjhome.guetw5.AppConstants;
 
 public class AppUtils {
     /**

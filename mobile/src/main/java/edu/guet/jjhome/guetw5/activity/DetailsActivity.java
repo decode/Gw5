@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.R;
 
 public class DetailsActivity extends ActionBarActivity {
     private Item item;
@@ -23,6 +27,8 @@ public class DetailsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         processViews();
 

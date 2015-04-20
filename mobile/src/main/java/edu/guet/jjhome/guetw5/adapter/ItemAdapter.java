@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.R;
 
 public class ItemAdapter extends ArrayAdapter<Item> {
     private List<Item> items;
