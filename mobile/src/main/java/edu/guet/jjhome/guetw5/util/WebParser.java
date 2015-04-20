@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import edu.guet.jjhome.guetw5.AppConstants;
 import edu.guet.jjhome.guetw5.model.Item;
 
 public class WebParser {

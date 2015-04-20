@@ -1,4 +1,4 @@
-package edu.guet.jjhome.guetw5;
+package edu.guet.jjhome.guetw5.util;
 
 public class AppConstants {
     public static final String MY_ACCOUNT_TYPE = "edu.guet.accounts";

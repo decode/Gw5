@@ -19,11 +19,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
 import edu.guet.jjhome.guetw5.model.Item;
 import edu.guet.jjhome.guetw5.util.WebService;
+import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 public class OverviewFragment extends Fragment {
     private static final String ARG_TYPE = "type";
@@ -91,6 +92,7 @@ public class OverviewFragment extends Fragment {
             }
         });
 
+
         return rootView;
     }
 
@@ -128,6 +130,7 @@ public class OverviewFragment extends Fragment {
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
+                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotificationsText("New");
                     txt_status.setVisibility(View.INVISIBLE);
                     break;
                 case AppConstants.STAGE_NOT_LOGIN:
@@ -154,7 +157,6 @@ public class OverviewFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
         }
 
         if (id == R.id.action_overview_refresh) {

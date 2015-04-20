@@ -9,7 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.model.Item;
 import edu.guet.jjhome.guetw5.R;
 

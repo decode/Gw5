@@ -7,11 +7,13 @@
     <string name="nav_item_message">Message</string>
     <string name="nav_item_public">Public</string>
     <string name="nav_item_outbox">Outbox</string>
+    <string name="nav_item_about">About</string>
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_item_message</item>
         <item>@string/nav_item_public</item>
         <item>@string/nav_item_outbox</item>
+        <item>@string/nav_item_about</item>
     </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

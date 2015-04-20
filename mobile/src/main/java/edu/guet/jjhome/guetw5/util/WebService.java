@@ -16,7 +16,6 @@ import org.apache.http.Header;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import edu.guet.jjhome.guetw5.AppConstants;
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
 import edu.guet.jjhome.guetw5.model.Item;
 

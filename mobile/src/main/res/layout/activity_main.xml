@@ -49,13 +49,13 @@
         <!--android:name="edu.guet.jjhome.guetw5.activity.NavigationDrawerFragment"-->
         <!--tools:layout="@layout/fragment_navigation_drawer" />-->
 
-    <fragment
-        android:id="@+id/navigation_drawer"
-        android:name="edu.guet.jjhome.guetw5.activity.DrawerFragment"
-        android:layout_width="@dimen/navigation_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/fragment_navigation_drawer" />
+    <!--<fragment-->
+        <!--android:id="@+id/navigation_drawer"-->
+        <!--android:name="edu.guet.jjhome.guetw5.activity.DrawerFragment"-->
+        <!--android:layout_width="@dimen/navigation_drawer_width"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--app:layout="@layout/fragment_navigation_drawer"-->
+        <!--tools:layout="@layout/fragment_navigation_drawer" />-->
 
 </android.support.v4.widget.DrawerLayout>

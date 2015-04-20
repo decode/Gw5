@@ -1,6 +1,7 @@
 package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.guet.jjhome.guetw5.AppConstants;
+import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
 
 public class MainActivity extends ActionBarActivity
@@ -32,6 +33,10 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         processView();
+
+
+        Intent intent = new Intent(this, MyNavigationDrawer.class);
+        startActivity(intent);
     }
 
     private void processView() {
@@ -40,13 +45,13 @@ public class MainActivity extends ActionBarActivity
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//
+//        drawerFragment = (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+//        drawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+//        drawerFragment.setDrawerListener(this);
 
-        drawerFragment = (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        drawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
-        drawerFragment.setDrawerListener(this);
-
-        displayView(0);
+//        displayView(0);
     }
 
     @Override
@@ -126,14 +131,14 @@ public class MainActivity extends ActionBarActivity
             return true;
         }
         // Click drawer toggle button
-        if ((item.getItemId() == android.R.id.home)) {
-            if (drawerFragment.isDrawerOpen()) {
-                mDrawerLayout.closeDrawer(findViewById(R.id.navigation_drawer));
-            }
-            else {
-                mDrawerLayout.openDrawer(findViewById(R.id.navigation_drawer));
-            }
-        }
+//        if ((item.getItemId() == android.R.id.home)) {
+//            if (drawerFragment.isDrawerOpen()) {
+//                mDrawerLayout.closeDrawer(findViewById(R.id.navigation_drawer));
+//            }
+//            else {
+//                mDrawerLayout.openDrawer(findViewById(R.id.navigation_drawer));
+//            }
+//        }
 
         return super.onOptionsItemSelected(item);
     }
