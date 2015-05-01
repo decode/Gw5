@@ -1,9 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:key="example_checkbox"
-        android:title="@string/pref_title_social_recommendations"
-        android:summary="@string/pref_description_social_recommendations"
+        android:key="pref_auto_login"
+        android:title="@string/pref_title_auto_login"
+        android:summary="@string/pref_description_auto_login"
         android:defaultValue="true" />
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->

@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.activeandroid.query.Select;
+
+import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
 
@@ -33,7 +36,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         processView();
-
+        processController();
 
         Intent intent = new Intent(this, MyNavigationDrawer.class);
         startActivity(intent);
@@ -52,6 +55,9 @@ public class MainActivity extends ActionBarActivity
 //        drawerFragment.setDrawerListener(this);
 
 //        displayView(0);
+    }
+
+    private void processController() {
     }
 
     @Override
@@ -115,7 +121,7 @@ public class MainActivity extends ActionBarActivity
 //            return true;
 //        }
 //        return super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.global, menu);
         return true;
     }
 

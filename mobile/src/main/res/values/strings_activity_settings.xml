@@ -58,4 +58,9 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+
+    <!--User settings-->
+    <string name="pref_title_auto_login">Auto Login</string>
+    <string name="pref_description_auto_login">User don not used to input username and password at next login</string>
 </resources>

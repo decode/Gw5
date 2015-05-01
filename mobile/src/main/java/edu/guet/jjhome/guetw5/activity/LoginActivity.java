@@ -8,12 +8,16 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -25,11 +29,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.guet.jjhome.guetw5.R;
+import edu.guet.jjhome.guetw5.model.User;
+import edu.guet.jjhome.guetw5.util.AppConstants;
+import edu.guet.jjhome.guetw5.util.WebService;
+import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 
 /**
@@ -55,11 +66,24 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mProgressView;
     private View mLoginFormView;
 
+    private Handler handler;
+
+    SharedPreferences sharedPref;
+    private boolean isAutoLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        handler = new Handler(new MsgHandler());
+
+        processView();
+
+        getAutoLoginInfo();
+    }
+
+    private void processView() {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -86,6 +110,25 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        isAutoLogin();
+    }
+
+    private void getAutoLoginInfo() {
+        if (isAutoLogin()) {
+            User u = new Select().from(User.class).orderBy("ID ASC").executeSingle();
+            if (u != null) {
+                mEmailView.setText(u.username);
+                mPasswordView.setText(u.password);
+            }
+        }
+    }
+
+    private boolean isAutoLogin() {
+        String pref_autologin = sharedPref.getString(AppConstants.PREF_AUTOLOGIN, "");
+        isAutoLogin = pref_autologin.equals("true");
+        return isAutoLogin;
     }
 
     private void populateAutoComplete() {
@@ -141,8 +184,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
+
+            Toast.makeText(getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
+            WebService web = new WebService(getBaseContext(), handler);
+            web.login(email, password);
         }
     }
 
@@ -306,6 +353,34 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+
+    private class MsgHandler implements Handler.Callback {
+        @Override
+        public boolean handleMessage(Message msg) {
+            showProgress(false);
+            switch (msg.what) {
+                case AppConstants.STAGE_LOGIN:
+                    break;
+                case AppConstants.STAGE_GET_ERROR:
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                    break;
+                case AppConstants.STAGE_GET_SUCCESS:
+                    finish();
+                    if (isAutoLogin()) {
+//                        User u = new User(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                        User u = User.fetch(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                        u.current = true;
+                        u.save();
+                    }
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    LoginActivity.this.startActivity(intent);
+                    break;
+            }
+            return false;
         }
     }
 }

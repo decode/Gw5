@@ -136,6 +136,7 @@ public class OverviewFragment extends Fragment {
                 case AppConstants.STAGE_NOT_LOGIN:
                     txt_status.setText("You are not login. Please re-login");
                     txt_status.setVisibility(View.VISIBLE);
+                    break;
             }
             return false;
         }
@@ -143,7 +144,7 @@ public class OverviewFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
+//        menu.clear();
         inflater.inflate(R.menu.overview, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

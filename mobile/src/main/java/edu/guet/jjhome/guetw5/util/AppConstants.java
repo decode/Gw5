@@ -18,4 +18,6 @@ public class AppConstants {
     public static final int STAGE_NOT_LOGIN = 5;
     public static final String STAGE_GET_ERROR_KEY = "ERROR_MSG";
     public static final String MSG_LIST = "MESSAGES";
+
+    public static final String PREF_AUTOLOGIN = "pref_auto_login";
 }

@@ -70,6 +70,10 @@ public class WebService {
                 try {
                     String result = new String(response, "UTF-8");
                     Log.d("HTML Result", result);
+
+                    Message msg = Message.obtain();
+                    msg.what = AppConstants.STAGE_GET_SUCCESS;
+                    handler.sendMessage(msg);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
