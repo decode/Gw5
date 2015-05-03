@@ -21,14 +21,13 @@ import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
 
-import edu.guet.jjhome.guetw5.model.User;
-import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
 import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.model.User;
+import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.util.WebService;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
-import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
 
 public class OverviewFragment extends Fragment {
     private static final String ARG_TYPE = "type";
@@ -177,22 +176,20 @@ public class OverviewFragment extends Fragment {
 //        }
 
         if (id == R.id.action_overview_refresh) {
-            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-            Toast.makeText(getActivity().getBaseContext(), u.username, Toast.LENGTH_SHORT).show();
-
-//            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
-//            WebService web = new WebService(getActivity().getBaseContext(), handler);
-//            web.fetchContent(param_type ,itemAdapter);
+            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
+            WebService web = new WebService(getActivity().getBaseContext(), handler);
+            web.fetchContent(param_type ,itemAdapter);
         }
         if (id == R.id.action_login) {
             startActivityForResult(new Intent(getActivity(), LoginActivity.class), 1);
         }
         if (id == R.id.action_logout) {
-            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-            u.delete();
-            MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
-//            new Thread(my_drawer.initRemoveAccount()).start();
-            my_drawer.accountChange();
+            User u = User.CurrentUser();
+            if (u != null) {
+                u.delete();
+                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
+                my_drawer.accountChange();
+            }
         }
 
         return super.onOptionsItemSelected(item);

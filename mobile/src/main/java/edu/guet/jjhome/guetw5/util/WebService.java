@@ -22,6 +22,7 @@ import edu.guet.jjhome.guetw5.model.Item;
 public class WebService {
 
     String login_url = "http://guetw5.myclub2.com/Account/LogOn";
+    String logout_url = "http://guetw5.myclub2.com/Account/LogOff";
     String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";
     String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
 
@@ -97,6 +98,20 @@ public class WebService {
             @Override
             public void onRetry(int retryNo) {
                 // called when request is retried
+            }
+        });
+    }
+
+    public void logout() {
+        client.get(logout_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
             }
         });
     }

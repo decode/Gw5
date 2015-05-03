@@ -2,7 +2,6 @@ package edu.guet.jjhome.guetw5.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 
@@ -17,7 +16,6 @@ import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionLis
 public class MyNavigationDrawer extends MaterialNavigationDrawer{
     @Override
     public void init(Bundle bundle) {
-        updateAccountStatus();
 
         MaterialSection section_all = newSection(getString(R.string.nav_item_message), OverviewFragment.newInstance(AppConstants.NOTICE_ALL));
         MaterialSection section_public = newSection(getString(R.string.nav_item_public), OverviewFragment.newInstance(AppConstants.NOTICE_PUBLIC));
@@ -25,6 +23,8 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
         this.addSection(section_all);
         this.addSection(section_public);
         this.addSection(section_outbox);
+
+        initAccountStatus();
 
         this.addBottomSection(newSection(getString(R.string.title_activity_settings), new Intent(this, SettingsActivity.class)));
 
@@ -41,11 +41,7 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Toast.makeText(getBaseContext(), String.valueOf(requestCode), Toast.LENGTH_SHORT).show();
-
         if(resultCode == RESULT_OK){
-
             accountChange();
         }
         if (resultCode == RESULT_CANCELED) {
@@ -53,9 +49,10 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
         }
     }
 
-    private void updateAccountStatus() {
+    private void initAccountStatus() {
         User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
         MaterialAccount account;
+        MaterialSection section;
         if (u != null) {
             account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
         }
@@ -63,7 +60,6 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
             account = new MaterialAccount(this.getResources(), "Not log in", "", R.drawable.ic_profile, R.drawable.ic_home);
         }
         this.addAccount(account);
-        this.addDivisor();
     }
 
     class RemoveAccount implements Runnable {
@@ -87,27 +83,43 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
     protected void accountChange() {
         new Thread(new RemoveAccount()).start();
 
-        final User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        User u = User.CurrentUser();
         MaterialAccount account;
         if (u != null) {
             account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
         }
         else {
-
             account = new MaterialAccount(this.getResources(), "Not log in", "", R.drawable.ic_profile, R.drawable.ic_home);
         }
         addAccount(account);
         notifyAccountDataChanged();
+//        sectionChange();
     }
 
     protected void sectionChange() {
         MaterialSection login = getSectionByTitle(getString(R.string.nav_item_login));
         MaterialSection logout = getSectionByTitle(getString(R.string.nav_item_logout));
         if (login != null) {
-
+            login.setTitle(getString(R.string.nav_item_logout));
+            login.setOnClickListener(new MaterialSectionListener() {
+                @Override
+                public void onClick(MaterialSection materialSection) {
+                    User u = User.CurrentUser();
+                    u.delete();
+                    accountChange();
+                }
+            });
+            setSection(login);
         }
-        if (logout != null) {
-
+        else {
+            logout.setTitle(getString(R.string.nav_item_login));
+            logout.setOnClickListener(new MaterialSectionListener() {
+                @Override
+                public void onClick(MaterialSection materialSection) {
+                    startActivityForResult(new Intent(getBaseContext(), LoginActivity.class), 1);
+                }
+            });
+            setSection(logout);
         }
     }
 }
