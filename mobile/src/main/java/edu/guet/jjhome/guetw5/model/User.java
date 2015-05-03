@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 @Table(name = "Users")
 public class User extends Model {
-    @Column(name = "userame")
+    @Column(name = "username")
     public String username;
 
     @Column(name = "password")
@@ -50,6 +50,12 @@ public class User extends Model {
         this.initial_at = Calendar.getInstance().getTimeInMillis();
     }
 
+    /**
+     * Search or Create user
+     * @param username
+     * @param password
+     * @return existed user or new user
+     */
     public static User fetch(String username, String password) {
         User u = new Select().from(User.class).where("username=?", username).orderBy("ID ASC").executeSingle();
         if (u == null) {

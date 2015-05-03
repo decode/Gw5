@@ -79,8 +79,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         handler = new Handler(new MsgHandler());
 
         processView();
-
-        getAutoLoginInfo();
     }
 
     private void processView() {
@@ -112,7 +110,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mProgressView = findViewById(R.id.login_progress);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        isAutoLogin();
+
+        getAutoLoginInfo();
     }
 
     private void getAutoLoginInfo() {
@@ -126,9 +125,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isAutoLogin() {
-        String pref_autologin = sharedPref.getString(AppConstants.PREF_AUTOLOGIN, "");
-        isAutoLogin = pref_autologin.equals("true");
-        return isAutoLogin;
+        boolean is_auto_login = sharedPref.getBoolean(AppConstants.PREF_AUTOLOGIN, false);
+        return is_auto_login;
     }
 
     private void populateAutoComplete() {
@@ -187,7 +185,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 //            mAuthTask = new UserLoginTask(email, password);
 //            mAuthTask.execute((Void) null);
 
-            Toast.makeText(getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), getString(R.string.login_process), Toast.LENGTH_SHORT).show();
             WebService web = new WebService(getBaseContext(), handler);
             web.login(email, password);
         }
@@ -200,7 +198,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     /**
@@ -360,24 +358,34 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private class MsgHandler implements Handler.Callback {
         @Override
         public boolean handleMessage(Message msg) {
-            showProgress(false);
             switch (msg.what) {
                 case AppConstants.STAGE_LOGIN:
                     break;
-                case AppConstants.STAGE_GET_ERROR:
+                case AppConstants.STAGE_LOGIN_FAILED:
+                case AppConstants.STAGE_USERNAME_ERROR:
+                    showProgress(false);
+                    mEmailView.setError(getString(R.string.error_invalid_email));
+                    mEmailView.requestFocus();
+                    break;
+                case AppConstants.STAGE_PASSWORD_ERROR:
+                    showProgress(false);
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
-                    finish();
-                    if (isAutoLogin()) {
-//                        User u = new User(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    showProgress(false);
+//                    Toast.makeText(getBaseContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+//                    if (isAutoLogin()) {
+                    if (true) {
                         User u = User.fetch(mEmailView.getText().toString(), mPasswordView.getText().toString());
                         u.current = true;
                         u.save();
                     }
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    LoginActivity.this.startActivity(intent);
+                    Intent returnIntent = new Intent();
+                    setResult(RESULT_OK,returnIntent);
+                    finish();
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    LoginActivity.this.startActivity(intent);
                     break;
             }
             return false;

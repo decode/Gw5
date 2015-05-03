@@ -2,6 +2,7 @@ package edu.guet.jjhome.guetw5.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 
@@ -16,39 +17,7 @@ import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionLis
 public class MyNavigationDrawer extends MaterialNavigationDrawer{
     @Override
     public void init(Bundle bundle) {
-        User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-        MaterialAccount account;
-        if (u != null) {
-            account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.black_gradient);
-
-            this.addBottomSection(newSection(getString(R.string.nav_item_logout),
-                    new MaterialSectionListener() {
-                        @Override
-                        public void onClick(MaterialSection materialSection) {
-                            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-                            if (u != null) {
-                                u.delete();
-                            }
-                        }
-                    }
-            ));
-        }
-        else {
-            account = new MaterialAccount(this.getResources(), "Not log in", "", R.drawable.ic_profile, R.drawable.black_gradient);
-            this.addBottomSection(newSection(getString(R.string.nav_item_login),
-                    new MaterialSectionListener() {
-                        @Override
-                        public void onClick(MaterialSection materialSection) {
-                            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-                            if (u != null) {
-                                u.delete();
-                            }
-                        }
-                    }
-            ));
-        }
-        this.addAccount(account);
-        this.addDivisor();
+        updateAccountStatus();
 
         MaterialSection section_all = newSection(getString(R.string.nav_item_message), OverviewFragment.newInstance(AppConstants.NOTICE_ALL));
         MaterialSection section_public = newSection(getString(R.string.nav_item_public), OverviewFragment.newInstance(AppConstants.NOTICE_PUBLIC));
@@ -57,8 +26,7 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
         this.addSection(section_public);
         this.addSection(section_outbox);
 
-//        this.addBottomSection(newSection(getString(R.string.title_activity_settings), new Intent(this, SettingsActivity.class)));
-//        this.addBottomSection(newSection(getString(R.string.title_activity_settings), new SettingsFragment()));
+        this.addBottomSection(newSection(getString(R.string.title_activity_settings), new Intent(this, SettingsActivity.class)));
 
         setDefaultSectionLoaded(0);
         disableLearningPattern();
@@ -66,8 +34,80 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
         setBackPattern(MaterialNavigationDrawer.BACKPATTERN_BACK_ANYWHERE);
     }
 
+
     @Override
     public void onBackPressed(){
         moveTaskToBack(true);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Toast.makeText(getBaseContext(), String.valueOf(requestCode), Toast.LENGTH_SHORT).show();
+
+        if(resultCode == RESULT_OK){
+
+            accountChange();
+        }
+        if (resultCode == RESULT_CANCELED) {
+            //Write your code if there's no result
+        }
+    }
+
+    private void updateAccountStatus() {
+        User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        MaterialAccount account;
+        if (u != null) {
+            account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
+        }
+        else {
+            account = new MaterialAccount(this.getResources(), "Not log in", "", R.drawable.ic_profile, R.drawable.ic_home);
+        }
+        this.addAccount(account);
+        this.addDivisor();
+    }
+
+    class RemoveAccount implements Runnable {
+        @Override
+        public void run() {
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeAccount(getCurrentAccount());
+                    notifyAccountDataChanged();
+                }
+            });
+        }
+    }
+
+    protected void accountChange() {
+        new Thread(new RemoveAccount()).start();
+
+        final User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        MaterialAccount account;
+        if (u != null) {
+            account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
+        }
+        else {
+
+            account = new MaterialAccount(this.getResources(), "Not log in", "", R.drawable.ic_profile, R.drawable.ic_home);
+        }
+        addAccount(account);
+        notifyAccountDataChanged();
+    }
+
+    protected void sectionChange() {
+        MaterialSection login = getSectionByTitle(getString(R.string.nav_item_login));
+        MaterialSection logout = getSectionByTitle(getString(R.string.nav_item_logout));
+        if (login != null) {
+
+        }
+        if (logout != null) {
+
+        }
     }
 }

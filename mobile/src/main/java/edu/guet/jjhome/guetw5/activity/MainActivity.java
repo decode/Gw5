@@ -15,11 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.activeandroid.query.Select;
-
-import edu.guet.jjhome.guetw5.model.User;
-import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
+import edu.guet.jjhome.guetw5.util.AppConstants;
 
 public class MainActivity extends ActionBarActivity
         implements DrawerFragment.FragmentDrawerListener {
@@ -134,7 +131,6 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
         }
         // Click drawer toggle button
 //        if ((item.getItemId() == android.R.id.home)) {

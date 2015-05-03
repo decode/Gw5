@@ -71,9 +71,8 @@ public class WebService {
                     String result = new String(response, "UTF-8");
                     Log.d("HTML Result", result);
 
-                    Message msg = Message.obtain();
-                    msg.what = AppConstants.STAGE_GET_SUCCESS;
-                    handler.sendMessage(msg);
+                    parseLoginMessage(result);
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -125,6 +124,7 @@ public class WebService {
                 msg.what = AppConstants.STAGE_GET_PAGE;
                 handler.sendMessage(msg);
             }
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
@@ -136,8 +136,7 @@ public class WebService {
                         ArrayList<Item> items;
                         if (conent_type == AppConstants.NOTICE_ALL) {
                             items = parser.parseItemList();
-                        }
-                        else {
+                        } else {
                             items = parser.parseCommonList();
                         }
                         adapter.clear();
@@ -146,8 +145,7 @@ public class WebService {
 
                         msg.what = AppConstants.STAGE_GET_SUCCESS;
                         handler.sendMessage(msg);
-                    }
-                    else {
+                    } else {
                         Log.d("Fetch unsuccessful", "not login");
                         msg = Message.obtain();
                         msg.what = AppConstants.STAGE_NOT_LOGIN;
@@ -174,6 +172,25 @@ public class WebService {
     }
 
     public boolean isLogin(String response) {
-        return !response.contains("用户名：") && response.contains("密　码：");
+        return !response.contains("输入数据有误。") && !response.contains("用户名：") && !response.contains("密　码：");
+    }
+
+    public void parseLoginMessage(String response) {
+        Message msg = Message.obtain();
+        if (isLogin(response)) {
+            msg.what = AppConstants.STAGE_GET_SUCCESS;
+        }
+        else {
+            if (response.contains("登录名错误")) {
+                msg.what = AppConstants.STAGE_USERNAME_ERROR;
+            }
+            else if (response.contains("密码错误")) {
+                msg.what = AppConstants.STAGE_PASSWORD_ERROR;
+            }
+            else {
+                msg.what = AppConstants.STAGE_LOGIN_FAILED;
+            }
+        }
+        handler.sendMessage(msg);
     }
 }

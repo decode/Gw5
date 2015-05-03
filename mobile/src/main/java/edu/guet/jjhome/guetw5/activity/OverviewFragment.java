@@ -17,14 +17,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
+
 import java.util.ArrayList;
 
+import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
 import edu.guet.jjhome.guetw5.model.Item;
 import edu.guet.jjhome.guetw5.util.WebService;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
+import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
 
 public class OverviewFragment extends Fragment {
     private static final String ARG_TYPE = "type";
@@ -146,6 +150,17 @@ public class OverviewFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        menu.clear();
         inflater.inflate(R.menu.overview, menu);
+        final User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        MenuItem menu_login = menu.findItem(R.id.action_login);
+        MenuItem menu_logout = menu.findItem(R.id.action_logout);
+        if (u != null) {
+            menu_login.setVisible(false);
+            menu_logout.setVisible(true);
+        }
+        else {
+            menu_logout.setVisible(true);
+            menu_logout.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -157,15 +172,35 @@ public class OverviewFragment extends Fragment {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-        }
+//        if (id == R.id.action_overview_settings) {
+//            startActivity(new Intent(getActivity().getBaseContext(), SettingsActivity.class));
+//        }
 
         if (id == R.id.action_overview_refresh) {
-            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
-            WebService web = new WebService(getActivity().getBaseContext(), handler);
-            web.fetchContent(param_type ,itemAdapter);
+            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+            Toast.makeText(getActivity().getBaseContext(), u.username, Toast.LENGTH_SHORT).show();
+
+//            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
+//            WebService web = new WebService(getActivity().getBaseContext(), handler);
+//            web.fetchContent(param_type ,itemAdapter);
+        }
+        if (id == R.id.action_login) {
+            startActivityForResult(new Intent(getActivity(), LoginActivity.class), 1);
+        }
+        if (id == R.id.action_logout) {
+            User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+            u.delete();
+            MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
+//            new Thread(my_drawer.initRemoveAccount()).start();
+            my_drawer.accountChange();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
