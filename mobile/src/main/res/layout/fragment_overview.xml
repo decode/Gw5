@@ -12,7 +12,8 @@
 
     <TextView android:id="@+id/text_status"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="No data"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:background="#e8f53a37" />
 </LinearLayout>

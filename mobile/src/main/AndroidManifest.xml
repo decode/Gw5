@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/MyNavigationDrawerTheme" >
+        android:theme="@style/MyMaterialTheme" >
         <meta-data
             android:name="AA_DB_NAME"
             android:value="home.db" />
@@ -24,16 +24,15 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.ProfileActivity"
@@ -45,7 +44,6 @@
             android:parentActivityName=".activity.MainActivity" >
             <intent-filter>
                 <action android:name=".Details" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <!-- Parent activity meta-data to support 4.0 and lower -->

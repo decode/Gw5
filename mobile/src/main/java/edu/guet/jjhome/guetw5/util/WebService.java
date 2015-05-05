@@ -25,6 +25,7 @@ public class WebService {
     String logout_url = "http://guetw5.myclub2.com/Account/LogOff";
     String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";
     String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
+    String message_prefix_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Details/";
 
     private AsyncHttpClient client;
 
@@ -70,7 +71,7 @@ public class WebService {
                 // called when response HTTP status is "200 OK"
                 try {
                     String result = new String(response, "UTF-8");
-                    Log.d("HTML Result", result);
+                    Log.d("Login Success", result);
 
                     parseLoginMessage(result);
 
@@ -82,17 +83,7 @@ public class WebService {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                try {
-                    String result = new String(errorResponse, "UTF-8");
-                    Log.d("HTML Result", result);
-                    Message msg = Message.obtain();
-                    msg.what = AppConstants.STAGE_GET_ERROR;
-                    Bundle b = new Bundle();
-                    b.putString(AppConstants.STAGE_GET_ERROR_KEY, "Can't access website");
-                    handler.sendMessage(msg);
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
-                }
+                noticeNetworkError(errorResponse);
             }
 
             @Override
@@ -106,12 +97,20 @@ public class WebService {
         client.get(logout_url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
+                try {
+                    String result = new String(responseBody, "UTF-8");
+                    Log.d("Logout Success", "");
+                    Message msg = Message.obtain();
+                    msg.what = AppConstants.STAGE_LOGOUT;
+                    handler.sendMessage(msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                noticeNetworkError(responseBody);
             }
         });
     }
@@ -154,34 +153,23 @@ public class WebService {
                         } else {
                             items = parser.parseCommonList();
                         }
-                        adapter.clear();
-                        adapter.addAll(items);
-                        adapter.notifyDataSetChanged();
+//                        adapter.clear();
+//                        adapter.addAll(items);
+//                        adapter.notifyDataSetChanged();
 
                         msg.what = AppConstants.STAGE_GET_SUCCESS;
                         handler.sendMessage(msg);
                     } else {
-                        Log.d("Fetch unsuccessful", "not login");
-                        msg = Message.obtain();
-                        msg.what = AppConstants.STAGE_NOT_LOGIN;
-                        handler.sendMessage(msg);
+                        noticeNotLogin();
                     }
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                Log.d("HTML Result", response);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                String result = null;
-                try {
-                    result = new String(responseBody, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                Log.d("HTML Error Result", result);
+                noticeNetworkError(responseBody);
             }
         });
     }
@@ -207,5 +195,59 @@ public class WebService {
             }
         }
         handler.sendMessage(msg);
+    }
+
+    public void readMessage(final String message_id) {
+        String url = message_prefix_url + message_id;
+        Log.d("Read message detail", url);
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    if (isLogin(response)) {
+                        WebParser parser = new WebParser(response);
+                        Item item = parser.parseMessageDetail(message_id);
+                        item.read_status = AppConstants.MSG_STATUS_READ;
+                        item.save();
+                        Message msg = Message.obtain();
+                        msg.what = AppConstants.STAGE_GET_SUCCESS;
+                        handler.sendMessage(msg);
+                    } else {
+                        noticeNotLogin();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+    }
+
+    private void noticeNotLogin() {
+        Log.d("Fetch unsuccessful", "not login");
+        Message msg = Message.obtain();
+        msg.what = AppConstants.STAGE_NOT_LOGIN;
+        handler.sendMessage(msg);
+    }
+
+    private void noticeNetworkError(byte[] responseBody) {
+        try {
+            String result = new String(responseBody, "UTF-8");
+            Log.d("HTML Error Result", result);
+            Message msg = Message.obtain();
+            msg.what = AppConstants.STAGE_GET_ERROR;
+            Bundle b = new Bundle();
+            b.putString(AppConstants.STAGE_GET_ERROR_KEY, "Can't access website");
+            handler.sendMessage(msg);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }

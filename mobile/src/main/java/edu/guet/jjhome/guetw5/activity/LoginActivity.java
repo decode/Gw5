@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Application;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -272,8 +273,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     public void clickCancel(View view) {
-        finish();
+        moveTaskToBack(true);
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -381,11 +388,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         u.current = true;
                         u.save();
                     }
-                    Intent returnIntent = new Intent();
-                    setResult(RESULT_OK,returnIntent);
-                    finish();
-//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                    LoginActivity.this.startActivity(intent);
+//                    Intent returnIntent = new Intent();
+//                    setResult(RESULT_OK,returnIntent);
+//                    finish();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    LoginActivity.this.startActivity(intent);
                     break;
             }
             return false;

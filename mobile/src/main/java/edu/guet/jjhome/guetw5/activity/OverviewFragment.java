@@ -17,8 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.query.Select;
-
 import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.R;
@@ -42,6 +40,9 @@ public class OverviewFragment extends Fragment {
     private TextView txt_status;
     private ListView lv_items;
 
+    WebService web;
+    private String msg_type;
+
     // TODO: Rename and change types and number of parameters
     public static OverviewFragment newInstance(int view_type) {
         OverviewFragment fragment = new OverviewFragment();
@@ -62,12 +63,22 @@ public class OverviewFragment extends Fragment {
             param_type = getArguments().getInt(ARG_TYPE);
         }
 
+        switch (param_type) {
+            case AppConstants.NOTICE_PUBLIC:
+                msg_type = AppConstants.MSG_PUBLIC;
+                break;
+            case AppConstants.NOTICE_ALL:
+                msg_type = AppConstants.MSG_ALL;
+                break;
+        }
+
         setHasOptionsMenu(true);
 
         ArrayList<Item> items = new ArrayList<>();
         itemAdapter = new ItemAdapter(getActivity().getBaseContext(), items);
 
         handler = new Handler(new MsgHandler());
+
     }
 
     @Override
@@ -95,6 +106,9 @@ public class OverviewFragment extends Fragment {
             }
         });
 
+        Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
+        web = new WebService(getActivity().getBaseContext(), handler);
+        web.fetchContent(param_type ,itemAdapter);
 
         return rootView;
     }
@@ -118,6 +132,7 @@ public class OverviewFragment extends Fragment {
 //        mListener = null;
     }
 
+
     private class MsgHandler implements Handler.Callback {
         @Override
         public boolean handleMessage(Message msg) {
@@ -133,13 +148,23 @@ public class OverviewFragment extends Fragment {
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
-                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotificationsText("New");
+                    int new_count = Item.getItemsByReadStatus(AppConstants.MSG_STATUS_UNREAD).size();
+                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotifications(new_count);
                     txt_status.setVisibility(View.INVISIBLE);
+                    lv_items.setVisibility(View.VISIBLE);
+
+                    itemAdapter.clear();
+                    itemAdapter.addAll(Item.getItemsByType(msg_type));
+                    itemAdapter.notifyDataSetChanged();
                     break;
                 case AppConstants.STAGE_NOT_LOGIN:
                     txt_status.setText("You are not login. Please re-login");
                     txt_status.setVisibility(View.VISIBLE);
+                    lv_items.setVisibility(View.INVISIBLE);
                     break;
+                case AppConstants.STAGE_LOGOUT:
+                    Toast.makeText(getActivity().getBaseContext(), "Logout Success", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
             }
             return false;
         }
@@ -149,16 +174,19 @@ public class OverviewFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        menu.clear();
         inflater.inflate(R.menu.overview, menu);
-        final User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        User u = User.currentUser();
         MenuItem menu_login = menu.findItem(R.id.action_login);
         MenuItem menu_logout = menu.findItem(R.id.action_logout);
+        MenuItem menu_refresh = menu.findItem(R.id.action_overview_refresh);
         if (u != null) {
             menu_login.setVisible(false);
             menu_logout.setVisible(true);
+            menu_refresh.setVisible(true);
         }
         else {
             menu_logout.setVisible(true);
             menu_logout.setVisible(false);
+            menu_refresh.setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -176,19 +204,23 @@ public class OverviewFragment extends Fragment {
 //        }
 
         if (id == R.id.action_overview_refresh) {
-            Toast.makeText(getActivity().getBaseContext(), "Fragment Fetch content.", Toast.LENGTH_SHORT).show();
-            WebService web = new WebService(getActivity().getBaseContext(), handler);
+            Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
+            web = new WebService(getActivity().getBaseContext(), handler);
             web.fetchContent(param_type ,itemAdapter);
         }
         if (id == R.id.action_login) {
-            startActivityForResult(new Intent(getActivity(), LoginActivity.class), 1);
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityForResult(intent, 1);
         }
         if (id == R.id.action_logout) {
-            User u = User.CurrentUser();
+            User u = User.currentUser();
             if (u != null) {
                 u.delete();
                 MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
                 my_drawer.accountChange();
+                web = new WebService(getActivity().getBaseContext(), handler);
+                web.logout();
             }
         }
 

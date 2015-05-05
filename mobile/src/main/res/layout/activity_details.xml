@@ -24,7 +24,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/text_content" />
+        android:id="@+id/text_title" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/text_content" />
+    </ScrollView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,4 +61,11 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/text_importance" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/text_status"
+        android:visibility="invisible" />
 </LinearLayout>

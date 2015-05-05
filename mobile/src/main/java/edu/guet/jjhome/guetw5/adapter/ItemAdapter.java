@@ -1,6 +1,8 @@
 package edu.guet.jjhome.guetw5.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +50,22 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         Item p = getItem(position);
         if (p != null) {
             viewHolder.tSender.setText(p.getSender());
-            viewHolder.tContent.setText(p.getContent());
+            viewHolder.tContent.setText(p.title);
             DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
             Date d = new Date(p.getSent_at());
             viewHolder.tSent_at.setText(df.format(d));
+
+            if (p.read_status != null) {
+                if (p.read_status.equals(AppConstants.MSG_STATUS_UNREAD)) {
+                    viewHolder.tSender.setTextColor(Color.WHITE);
+                    viewHolder.tContent.setTextColor(Color.WHITE);
+                    viewHolder.tSent_at.setTextColor(Color.WHITE);
+                } else {
+                    viewHolder.tSender.setTextColor(Color.GRAY);
+                    viewHolder.tContent.setTextColor(Color.GRAY);
+                    viewHolder.tSent_at.setTextColor(Color.GRAY);
+                }
+            }
         }
 
         return convertView;

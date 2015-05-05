@@ -67,8 +67,7 @@ public class User extends Model {
         return u;
     }
 
-    public static User CurrentUser() {
-        User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
-        return u;
+    public static User currentUser() {
+        return new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
     }
 }

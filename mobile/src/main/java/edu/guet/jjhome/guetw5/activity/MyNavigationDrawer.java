@@ -83,7 +83,7 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
     protected void accountChange() {
         new Thread(new RemoveAccount()).start();
 
-        User u = User.CurrentUser();
+        User u = User.currentUser();
         MaterialAccount account;
         if (u != null) {
             account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
@@ -104,7 +104,7 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
             login.setOnClickListener(new MaterialSectionListener() {
                 @Override
                 public void onClick(MaterialSection materialSection) {
-                    User u = User.CurrentUser();
+                    User u = User.currentUser();
                     u.delete();
                     accountChange();
                 }

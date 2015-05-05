@@ -1,19 +1,56 @@
 package edu.guet.jjhome.guetw5.model;
 
+import android.util.Log;
+
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.List;
 
-public class Item implements Serializable {
-    private long id;
-    private String message_id; // record message unique code
-    private String source; // record url
-    private String msg_status;
-    private String sender;
-    private String receiver;
-    private String content;
-    private long sent_at;
-    private String emergency;
-    private String importance;
+import edu.guet.jjhome.guetw5.util.AppConstants;
+
+@Table(name = "Items")
+public class Item extends Model implements Serializable {
+
+    @Column(name = "message_id")
+    public String message_id; // record message unique code
+
+    @Column(name = "source")
+    public String source; // record url
+
+    @Column(name = "msg_type")
+    public String msg_type;
+
+    @Column(name = "msg_status")
+    public String msg_status;
+
+    @Column(name = "read_status")
+    public String read_status;
+
+    @Column(name = "sender")
+    public String sender;
+
+    @Column(name = "receiver")
+    public String receiver;
+
+    @Column(name = "title")
+    public String title;
+
+    @Column(name = "content")
+    public String content;
+
+    @Column(name = "sent_at")
+    public long sent_at;
+
+    @Column(name = "emergency")
+    public String emergency;
+
+    @Column(name = "importance")
+    public String importance;
 
     public Item() {
         message_id = "";
@@ -27,19 +64,10 @@ public class Item implements Serializable {
         importance = "";
     }
 
-    public Item(long id, String sender, String content, long sent_at) {
-        this.id = id;
+    public Item(String sender, String content, long sent_at) {
         this.sender = sender;
         this.content = content;
         this.sent_at = sent_at;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getSender() {
@@ -112,5 +140,31 @@ public class Item implements Serializable {
 
     public void setMsg_status(String msg_status) {
         this.msg_status = msg_status;
+    }
+
+    public static List<Item> getItems(String msg_type) {
+        return new Select().from(Item.class).where("msg_type = ?", msg_type).orderBy("sent_at DESC").execute();
+    }
+
+    public static Item fetchItem(String message_id) {
+        Item item = new Select().from(Item.class).where("message_id = ?", message_id).orderBy("id ASC").executeSingle();
+        if (item == null) {
+            item = new Item();
+            Log.d("Not find existed item", "create new");
+        }
+        return item;
+    }
+
+    public static List<Item> getItemsByReadStatus(String read_status) {
+        return new Select().from(Item.class)
+                .where("read_status = ?", read_status)
+                .orderBy("sent_at DESC").execute();
+    }
+
+    public static List<Item> getItemsByType(String msg_type) {
+        return new Select().from(Item.class)
+                .where("msg_type = ?", msg_type)
+                .orderBy("read_status DESC")
+                .execute();
     }
 }
