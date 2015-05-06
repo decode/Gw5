@@ -21,6 +21,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,7 +71,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private Handler handler;
 
     SharedPreferences sharedPref;
-    private boolean isAutoLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         handler = new Handler(new MsgHandler());
 
         processView();
+
+        if (isAutoLogin()) {
+            attemptLogin();
+        }
     }
 
     private void processView() {
@@ -126,8 +130,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isAutoLogin() {
-        boolean is_auto_login = sharedPref.getBoolean(AppConstants.PREF_AUTOLOGIN, false);
-        return is_auto_login;
+        return sharedPref.getBoolean(AppConstants.PREF_AUTOLOGIN, false);
     }
 
     private void populateAutoComplete() {

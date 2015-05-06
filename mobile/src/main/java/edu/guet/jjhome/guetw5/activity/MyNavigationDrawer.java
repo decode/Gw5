@@ -52,7 +52,6 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
     private void initAccountStatus() {
         User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
         MaterialAccount account;
-        MaterialSection section;
         if (u != null) {
             account = new MaterialAccount(this.getResources(), u.username, u.department, R.drawable.ic_profile, R.drawable.ic_home);
         }

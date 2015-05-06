@@ -1,11 +1,15 @@
 package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -221,6 +225,16 @@ public class OverviewFragment extends Fragment {
                 my_drawer.accountChange();
                 web = new WebService(getActivity().getBaseContext(), handler);
                 web.logout();
+
+//                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(AppConstants.PREF_AUTOLOGIN, false);
+                editor.commit();
+
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, 1);
             }
         }
 
