@@ -119,16 +119,17 @@ public class WebService {
      * TODO: parse next page to the end.
      * @param adapter
      */
-    public void fetchContent(final int conent_type, final ItemAdapter adapter) {
+    public void fetchContent(final String conent_type, final ItemAdapter adapter) {
         String dest_url = "";
         switch (conent_type) {
-            case AppConstants.NOTICE_PUBLIC:
+            case AppConstants.MSG_PUBLIC:
                 dest_url = common_url;
                 break;
-            case AppConstants.NOTICE_ALL:
+            case AppConstants.MSG_ALL:
                 dest_url = person_url;
                 break;
         }
+        Log.d("message type in webservice", dest_url);
         client.get(dest_url, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -148,7 +149,7 @@ public class WebService {
                     if (isLogin(response)) {
                         WebParser parser = new WebParser(response);
                         ArrayList<Item> items;
-                        if (conent_type == AppConstants.NOTICE_ALL) {
+                        if (conent_type.equals(AppConstants.MSG_ALL)) {
                             items = parser.parseItemList();
                         } else {
                             items = parser.parseCommonList();
@@ -228,6 +229,8 @@ public class WebService {
         });
     }
 
+
+
     private void noticeNotLogin() {
         Log.d("Fetch unsuccessful", "not login");
         Message msg = Message.obtain();
@@ -249,5 +252,61 @@ public class WebService {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+
+    public void fetch(final int conent_type) {
+        String dest_url = "";
+        switch (conent_type) {
+            case AppConstants.NOTICE_PUBLIC:
+                dest_url = common_url;
+                break;
+            case AppConstants.NOTICE_ALL:
+                dest_url = person_url;
+                break;
+        }
+        client.get(dest_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+                Log.d("Fetching...", "get page data");
+                Message msg = Message.obtain();
+                msg.what = AppConstants.STAGE_GET_PAGE;
+                handler.sendMessage(msg);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    Message msg = Message.obtain();
+                    Log.d("Finished fetching", "get page data success");
+                    if (isLogin(response)) {
+                        WebParser parser = new WebParser(response);
+                        ArrayList<Item> items;
+                        if (conent_type == AppConstants.NOTICE_ALL) {
+                            items = parser.parseItemList();
+                        } else {
+                            items = parser.parseCommonList();
+                        }
+                        msg.what = AppConstants.STAGE_GET_SUCCESS;
+                        handler.sendMessage(msg);
+                    }
+                    else {
+                            noticeNotLogin();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                noticeNetworkError(responseBody);
+            }
+
+        });
     }
 }

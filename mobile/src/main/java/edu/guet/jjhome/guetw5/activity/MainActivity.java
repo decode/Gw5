@@ -3,20 +3,49 @@ package edu.guet.jjhome.guetw5.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
+
+import com.activeandroid.query.Select;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.ViewPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.ViewPagerItems;
+import com.ogaclejapan.smarttablayout.utils.v4.Bundler;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
+
+import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.R;
+import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
+import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
+import edu.guet.jjhome.guetw5.util.WebService;
 
 public class MainActivity extends ActionBarActivity
         implements DrawerFragment.FragmentDrawerListener {
@@ -26,6 +55,10 @@ public class MainActivity extends ActionBarActivity
 
     private DrawerFragment drawerFragment;
     private Toolbar mToolbar;
+    private AccountHeader.Result headerResult;
+    private OverviewFragment fragment;
+    private ViewPager viewPager;
+    private SmartTabLayout viewPagerTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +66,9 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         processView();
-        processController();
 
-        Intent intent = new Intent(this, MyNavigationDrawer.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, MyNavigationDrawer.class);
+//        startActivity(intent);
     }
 
     private void processView() {
@@ -44,6 +76,32 @@ public class MainActivity extends ActionBarActivity
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        initDrawer();
+
+//        viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+//
+//        final Bundler bundler1 = new Bundler();
+//        bundler1.putString("msg_type", AppConstants.MSG_ALL);
+//        bundler1.putString("read_status", AppConstants.MSG_STATUS_UNREAD);
+//        final Bundler bundler2 = new Bundler();
+//        bundler2.putString("msg_type", AppConstants.MSG_ALL);
+//        bundler2.putString("read_status", AppConstants.MSG_STATUS_READ);
+//        final Bundler bundler3 = new Bundler();
+//        bundler3.putString("msg_type", AppConstants.MSG_PUBLIC);
+//
+//
+//        final FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+//                getSupportFragmentManager(), FragmentPagerItems.with(getBaseContext())
+//                .add(AppConstants.MSG_STATUS_UNREAD, OverviewFragment.class, bundler1.get())
+//                .add(AppConstants.MSG_STATUS_READ, OverviewFragment.class, bundler2.get())
+//                .add(AppConstants.MSG_PUBLIC, OverviewFragment.class, bundler3.get())
+//                .create());
+//        viewPager.setAdapter(adapter);
+//        viewPagerTab.setViewPager(viewPager);
+
+
 
 //        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //
@@ -54,7 +112,76 @@ public class MainActivity extends ActionBarActivity
 //        displayView(0);
     }
 
-    private void processController() {
+    private void initDrawer() {
+        headerResult = new AccountHeader()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.black_gradient)
+                .addProfiles(
+                        initAccount()
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        return false;
+                    }
+                })
+                .build();
+
+
+        Drawer.Result result = new Drawer()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withAccountHeader(headerResult)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.nav_item_unread),
+                        new PrimaryDrawerItem().withName(R.string.nav_item_read),
+                        new PrimaryDrawerItem().withName(R.string.nav_item_public),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withName(R.string.nav_item_setting)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        // do something with the clicked item :D
+                        switch (position) {
+                            case 0:
+                                fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_UNREAD);
+                                break;
+                            case 1:
+                                fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_READ);
+                                break;
+                            case 2:
+                                fragment = OverviewFragment.newInstance(AppConstants.MSG_PUBLIC, "");
+                                break;
+                            case 4:
+                                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+                                break;
+                        }
+
+                        if (fragment != null) {
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.container, fragment);
+                            fragmentTransaction.commit();
+                        }
+                    }
+                })
+                .build();
+
+        result.setSelection(0, true);
+    }
+
+
+    private ProfileDrawerItem initAccount() {
+        User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();
+        ProfileDrawerItem account;
+        if (u != null) {
+            account = new ProfileDrawerItem().withName(u.username).withEmail(" ").withIcon(getResources().getDrawable(R.drawable.ic_profile));
+        }
+        else {
+            account = new ProfileDrawerItem().withName("Not Login").withIcon(getResources().getDrawable(R.drawable.ic_profile));
+        }
+        return account;
     }
 
     @Override
@@ -131,6 +258,7 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
         }
         // Click drawer toggle button
 //        if ((item.getItemId() == android.R.id.home)) {
@@ -184,4 +312,30 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    private class MsgHandler implements Handler.Callback {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case AppConstants.STAGE_LOGIN:
+                    break;
+                case AppConstants.STAGE_GET_PAGE:
+                    break;
+                case AppConstants.STAGE_GET_ERROR:
+                    break;
+                case AppConstants.STAGE_GET_SUCCESS:
+                    break;
+                case AppConstants.STAGE_NOT_LOGIN:
+                    break;
+                case AppConstants.STAGE_LOGOUT:
+                    break;
+            }
+            return false;
+        }
+    }
+
+
+    @Override
+    public void onBackPressed(){
+        moveTaskToBack(true);
+    }
 }

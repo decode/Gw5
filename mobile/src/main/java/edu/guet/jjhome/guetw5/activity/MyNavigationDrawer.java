@@ -17,12 +17,14 @@ public class MyNavigationDrawer extends MaterialNavigationDrawer{
     @Override
     public void init(Bundle bundle) {
 
+        MaterialSection section = newSection(getString(R.string.nav_item_message), new Intent(this, MessageActivity.class));
         MaterialSection section_all = newSection(getString(R.string.nav_item_message), OverviewFragment.newInstance(AppConstants.NOTICE_ALL));
         MaterialSection section_public = newSection(getString(R.string.nav_item_public), OverviewFragment.newInstance(AppConstants.NOTICE_PUBLIC));
         MaterialSection section_outbox = newSection(getString(R.string.nav_item_outbox), OverviewFragment.newInstance(AppConstants.NOTICE_ALL));
         this.addSection(section_all);
         this.addSection(section_public);
         this.addSection(section_outbox);
+        this.addSection(section);
 
         initAccountStatus();
 

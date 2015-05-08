@@ -61,6 +61,6 @@
 
 
     <!--User settings-->
-    <string name="pref_title_auto_login">Auto Login</string>
-    <string name="pref_description_auto_login">User don not used to input username and password at next login</string>
+    <string name="pref_title_auto_login">自动登录</string>
+    <string name="pref_description_auto_login">下次启动程序时，用户无须输入用户名和密码也可登录系统</string>
 </resources>

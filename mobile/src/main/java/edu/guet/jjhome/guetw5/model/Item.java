@@ -167,4 +167,16 @@ public class Item extends Model implements Serializable {
                 .orderBy("read_status DESC")
                 .execute();
     }
+
+    public static List<Item> getItemsByTypeAndStatus(String msg_type, String read_status) {
+        if (read_status != null && read_status.length() != 0) {
+            return new Select().from(Item.class)
+                    .where("msg_type = ? and read_status = ?", msg_type, read_status)
+                    .orderBy("sent_at DESC")
+                    .execute();
+        }
+        else {
+            return getItemsByType(msg_type);
+        }
+    }
 }

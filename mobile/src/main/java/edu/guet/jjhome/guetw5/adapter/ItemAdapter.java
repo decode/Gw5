@@ -57,9 +57,9 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
             if (p.read_status != null) {
                 if (p.read_status.equals(AppConstants.MSG_STATUS_UNREAD)) {
-                    viewHolder.tSender.setTextColor(Color.WHITE);
-                    viewHolder.tContent.setTextColor(Color.WHITE);
-                    viewHolder.tSent_at.setTextColor(Color.WHITE);
+                    viewHolder.tSender.setTextColor(Color.BLACK);
+                    viewHolder.tContent.setTextColor(Color.BLACK);
+                    viewHolder.tSent_at.setTextColor(Color.BLACK);
                 } else {
                     viewHolder.tSender.setTextColor(Color.GRAY);
                     viewHolder.tContent.setTextColor(Color.GRAY);

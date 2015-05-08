@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import java.util.ArrayList;
 
@@ -46,6 +51,7 @@ public class OverviewFragment extends Fragment {
 
     WebService web;
     private String msg_type;
+    private String read_status;
 
     // TODO: Rename and change types and number of parameters
     public static OverviewFragment newInstance(int view_type) {
@@ -53,6 +59,19 @@ public class OverviewFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_TYPE, view_type);
         fragment.setArguments(args);
+        Log.d("new Instance view_type", " ");
+        return fragment;
+    }
+    public static OverviewFragment newInstance(String msg_type, String read_status) {
+        OverviewFragment fragment = new OverviewFragment();
+
+        Bundle args = new Bundle();
+        args.putString("msg_type", msg_type);
+        args.putString("read_status", read_status);
+        fragment.setArguments(args);
+
+        Log.d("new Instance msg_type", " ");
+
         return fragment;
     }
 
@@ -63,17 +82,18 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            param_type = getArguments().getInt(ARG_TYPE);
+        if (getArguments().getString("msg_type") != null) {
+            msg_type = getArguments().getString("msg_type");
+        }
+        else {
+            msg_type = "all";
         }
 
-        switch (param_type) {
-            case AppConstants.NOTICE_PUBLIC:
-                msg_type = AppConstants.MSG_PUBLIC;
-                break;
-            case AppConstants.NOTICE_ALL:
-                msg_type = AppConstants.MSG_ALL;
-                break;
+        if (getArguments().getString("read_status") != null) {
+            read_status = getArguments().getString("read_status");
+        }
+        else {
+            read_status = "";
         }
 
         setHasOptionsMenu(true);
@@ -112,7 +132,7 @@ public class OverviewFragment extends Fragment {
 
         Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
         web = new WebService(getActivity().getBaseContext(), handler);
-        web.fetchContent(param_type ,itemAdapter);
+        web.fetchContent(msg_type, itemAdapter);
 
         return rootView;
     }
@@ -152,13 +172,14 @@ public class OverviewFragment extends Fragment {
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
-                    int new_count = Item.getItemsByReadStatus(AppConstants.MSG_STATUS_UNREAD).size();
-                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotifications(new_count);
+//                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotifications(new_count);
                     txt_status.setVisibility(View.INVISIBLE);
                     lv_items.setVisibility(View.VISIBLE);
 
                     itemAdapter.clear();
-                    itemAdapter.addAll(Item.getItemsByType(msg_type));
+//                    itemAdapter.addAll(Item.getItemsByType(msg_type));
+                    itemAdapter.addAll(Item.getItemsByTypeAndStatus(msg_type, read_status));
+                    Log.d("after success, test msg_type", msg_type);
                     itemAdapter.notifyDataSetChanged();
                     break;
                 case AppConstants.STAGE_NOT_LOGIN:
@@ -167,7 +188,7 @@ public class OverviewFragment extends Fragment {
                     lv_items.setVisibility(View.INVISIBLE);
                     break;
                 case AppConstants.STAGE_LOGOUT:
-                    Toast.makeText(getActivity().getBaseContext(), "Logout Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getActivity(), LoginActivity.class));
             }
             return false;
@@ -210,7 +231,7 @@ public class OverviewFragment extends Fragment {
         if (id == R.id.action_overview_refresh) {
             Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
             web = new WebService(getActivity().getBaseContext(), handler);
-            web.fetchContent(param_type ,itemAdapter);
+            web.fetchContent(msg_type, itemAdapter);
         }
         if (id == R.id.action_login) {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -221,12 +242,11 @@ public class OverviewFragment extends Fragment {
             User u = User.currentUser();
             if (u != null) {
                 u.delete();
-                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
-                my_drawer.accountChange();
+//                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
+//                my_drawer.accountChange();
                 web = new WebService(getActivity().getBaseContext(), handler);
                 web.logout();
 
-//                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(AppConstants.PREF_AUTOLOGIN, false);

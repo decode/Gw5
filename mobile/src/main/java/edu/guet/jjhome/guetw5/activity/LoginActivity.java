@@ -114,6 +114,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        // For test
+        mEmailView.setText("");
+        mPasswordView.setText("");
+
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         getAutoLoginInfo();
