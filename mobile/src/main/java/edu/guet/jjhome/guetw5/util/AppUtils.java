@@ -2,6 +2,15 @@ package edu.guet.jjhome.guetw5.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+
+import com.loopj.android.http.PersistentCookieStore;
+
+import org.apache.http.cookie.Cookie;
+
+import java.util.List;
 
 public class AppUtils {
     /**
@@ -33,5 +42,23 @@ public class AppUtils {
             return "";
         }
         return preferences.getString(propertyName, "");
+    }
+
+    public static void syncCookies(Context context) {
+
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+
+        List<Cookie> cookies = myCookieStore.getCookies();
+
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        for (int i = 0; i < cookies.size(); i++) {
+            Cookie eachCookie = cookies.get(i);
+            String cookieString = eachCookie.getName() + "=" + eachCookie.getValue();
+            cookieManager.setCookie("http://guetw5.myclub2.com", cookieString);
+            Log.i(">>>>>", "cookie : " + cookieString);
+        }
+
+        CookieSyncManager.getInstance().sync();
     }
 }

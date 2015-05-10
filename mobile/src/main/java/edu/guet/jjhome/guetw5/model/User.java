@@ -37,6 +37,12 @@ public class User extends Model {
     @Column(name = "role")
     public String role;
 
+    @Column(name = "position_id")
+    public String position_id;
+
+    @Column(name = "sex")
+    public String sex;
+
     public User() {
         super();
         this.initial_at = Calendar.getInstance().getTimeInMillis();

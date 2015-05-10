@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -147,6 +149,22 @@ public class WebParser {
 //        Element unread_role = doc.select("div.notice-trace > div.alert.alert-error").first();
 //        Element read_role = doc.select("div.notice-trace > div.alert.alert-success").first();
         return item;
+    }
+
+    public String parseCreateMessagePage() {
+        Element positionId = doc.select("input#CreatorPositionId").first();
+        return positionId.attr("value");
+
+    }
+
+    public void parseDeptTree() {
+
+        Element deptTree = doc.select("#positiontreejson").first();
+        try {
+            JSONObject json = new JSONObject(deptTree.html().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
 

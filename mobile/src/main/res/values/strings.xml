@@ -12,6 +12,7 @@
     <string name="nav_item_public">公共消息</string>
     <string name="nav_item_read">已读消息</string>
     <string name="nav_item_unread">未读消息</string>
+    <string name="nav_item_send">发布消息</string>
     <string name="nav_item_setting">设置</string>
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
@@ -37,5 +38,41 @@
     <string name="stage_refresh">正在更新...</string>
     <string name="title_activity_message">MessageActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_create_message">CreateMessageActivity</string>
+
+    <string name="action_choose">选择</string>
+
+    <string name="hint_message_to">发送到:</string>
+    <string name="hint_message_title">标题</string>
+    <string name="hint_message_content">正文</string>
+    <string name="hint_message_directions">选择工作方向</string>
+    <string name="hint_message_sms">发送短信提示</string>
+    <string name="hint_message_limit">限制选项</string>
+    <string-array name="limit">
+        <item>仅限名单中的部门或人员查看</item>
+        <item>不限制(公开)</item>
+    </string-array>
+    <string name="hint_message_trace">跟踪选项</string>
+    <string-array name="trace">
+        <item>仅跟踪预设名单</item>
+        <item>跟踪全部</item>
+    </string-array>
+    <string name="hint_message_urgency">紧急度</string>
+    <string-array name="urgency">
+        <item>普通</item>
+        <item>紧急</item>
+    </string-array>
+    <string name="hint_message_important">重要度</string>
+    <string-array name="important">
+        <item>一般</item>
+        <item>重要</item>
+    </string-array>
+    <string-array name="directions">
+        <item>教务</item>
+        <item>科研</item>
+        <item>学工</item>
+        <item>党政</item>
+        <item>工会</item>
+    </string-array>
 
 </resources>

@@ -137,6 +137,7 @@ public class MainActivity extends ActionBarActivity
                         new PrimaryDrawerItem().withName(R.string.nav_item_read),
                         new PrimaryDrawerItem().withName(R.string.nav_item_public),
                         new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withName(R.string.nav_item_send),
                         new SecondaryDrawerItem().withName(R.string.nav_item_setting)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -154,6 +155,9 @@ public class MainActivity extends ActionBarActivity
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_PUBLIC, "");
                                 break;
                             case 4:
+                                startActivity(new Intent(getBaseContext(), CreateMessageActivity.class));
+                                break;
+                            case 5:
                                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                                 break;
                         }

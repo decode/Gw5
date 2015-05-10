@@ -1,7 +1,6 @@
 package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,10 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
-
 import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.R;
@@ -34,7 +28,6 @@ import edu.guet.jjhome.guetw5.model.Item;
 import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.util.WebService;
-import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 public class OverviewFragment extends Fragment {
     private static final String ARG_TYPE = "type";
@@ -255,6 +248,8 @@ public class OverviewFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, 1);
+
+
             }
         }
 

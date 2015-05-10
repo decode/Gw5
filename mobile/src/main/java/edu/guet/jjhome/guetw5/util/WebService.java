@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -12,20 +13,25 @@ import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
 import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.model.User;
 
 public class WebService {
 
+    private final PersistentCookieStore myCookieStore;
     String login_url = "http://guetw5.myclub2.com/Account/LogOn";
     String logout_url = "http://guetw5.myclub2.com/Account/LogOff";
     String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";
     String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
     String message_prefix_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Details/";
+    String message_create_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Create";
 
     private AsyncHttpClient client;
 
@@ -36,11 +42,15 @@ public class WebService {
 
     public WebService(Context context, Handler handler) {
         client = new AsyncHttpClient();
-        PersistentCookieStore myCookieStore = new PersistentCookieStore(context);
+        myCookieStore = new PersistentCookieStore(context);
         client.setCookieStore(myCookieStore);
 
         this.context = context;
         this.handler = handler;
+    }
+
+    public PersistentCookieStore getCookie() {
+        return this.myCookieStore;
     }
 
     /**
@@ -94,6 +104,8 @@ public class WebService {
     }
 
     public void logout() {
+        CookieManager.getInstance().removeAllCookie();
+
         client.get(logout_url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -183,6 +195,15 @@ public class WebService {
         Message msg = Message.obtain();
         if (isLogin(response)) {
             msg.what = AppConstants.STAGE_GET_SUCCESS;
+            try {
+                JSONObject json = new JSONObject(response);
+                String remote_id = json.getString("id");
+                String name = json.getString("name");
+                String sex = json.getString("sex");
+                Log.d("remote_id:   ", remote_id + name + sex);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         else {
             if (response.contains("登录名错误")) {
@@ -228,8 +249,6 @@ public class WebService {
             }
         });
     }
-
-
 
     private void noticeNotLogin() {
         Log.d("Fetch unsuccessful", "not login");
@@ -291,9 +310,8 @@ public class WebService {
                         }
                         msg.what = AppConstants.STAGE_GET_SUCCESS;
                         handler.sendMessage(msg);
-                    }
-                    else {
-                            noticeNotLogin();
+                    } else {
+                        noticeNotLogin();
                     }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -308,5 +326,95 @@ public class WebService {
             }
 
         });
+    }
+
+    public void makeCreatePage() {
+        client.get(message_create_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    if (isLogin(response)) {
+                        WebParser parser = new WebParser(response);
+                        String position_id = parser.parseCreateMessagePage();
+                        User user = User.currentUser();
+                        user.position_id = position_id;
+                        user.save();
+
+                        Log.d("position_id", position_id);
+
+                        Message msg = Message.obtain();
+                        msg.what = AppConstants.STAGE_GET_SUCCESS;
+                        handler.sendMessage(msg);
+                    } else {
+                        noticeNotLogin();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                noticeNetworkError(responseBody);
+            }
+        });
+    }
+
+    public void postCreateMessage() {
+        RequestParams params = new RequestParams();
+        // 标题
+        params.put("Subject", "");
+        // 正文
+        params.put("Body", "");
+
+        // 工作方向: Array 0: 科研
+        params.put("Directions", "");
+
+        // 发布人: 553f212d-44b2-458a-9c05-03bd6b021156
+        params.put("DisplayCreatorPositionId", "");
+
+        // 限制选项: 1
+        params.put("LimitOption", "");
+
+        // 跟踪选项: 0
+        params.put("TraceOption", "");
+
+        //
+        params.put("forPositions", "on");
+
+        // 发送短信提醒: false
+        params.put("RemindOnCreate", "false");
+
+        // 阅读超时时间: ""-null
+        params.put("Deadline", "");
+
+        // HoursBeforeDeadLIne: null
+
+        // 紧急度
+        params.put("UrgencyOption", "0");
+
+        // 重要度
+        params.put("ImportantOption", "0");
+
+        // Array 0: 03-553f212d44b2458a9c0503bd6b021156
+        params.put("Targets", "03-553f212d44b2458a9c0503bd6b021156");
+
+        // Return: success: true, message: "发布成功"
+        // After create, redirect to url: http://guetw5.myclub2.com/NoticeTask/Notice/Create
+        // using get method
+        // html page include information:
+//        <tbody>
+//        <tr>
+//        <td>
+//        <a href="/NoticeTask/Notice/Details/f02bfefb-c780-47f6-9e8a-3cd99af63b90">123213123</a>
+//        </td>
+    }
+
+    public void undo() {
+        String url = "http://guetw5.myclub2.com/NoticeTask/Notice/Undo";
+        // id: "f02bfefb-c780-47f6-9e8a-3cd99af63b90"
+        // post method
+        // response: success:true message:撤销成功"
     }
 }

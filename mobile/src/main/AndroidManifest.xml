@@ -64,6 +64,10 @@
             android:name=".activity.MessageActivity"
             android:label="@string/title_activity_message" >
         </activity>
+        <activity
+            android:name=".activity.CreateMessageActivity"
+            android:label="@string/title_activity_create_message" >
+        </activity>
     </application>
 
 </manifest>
