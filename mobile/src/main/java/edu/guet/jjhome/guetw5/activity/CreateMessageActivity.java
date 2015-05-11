@@ -25,6 +25,7 @@ import org.apache.http.cookie.Cookie;
 import java.util.List;
 
 import edu.guet.jjhome.guetw5.R;
+import edu.guet.jjhome.guetw5.model.Contact;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.util.AppUtils;
 import edu.guet.jjhome.guetw5.util.WebService;
@@ -35,6 +36,7 @@ public class CreateMessageActivity extends ActionBarActivity {
     private Handler handler;
     private BetterSpinner spinner_urgency;
     private BetterSpinner spinner_important;
+    private ContactsCompletionView completionView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,12 @@ public class CreateMessageActivity extends ActionBarActivity {
         spinner_urgency.setAdapter(adapter1);
         spinner_important.setAdapter(adapter2);
 
+        Contact[] contact = Contact.getAllContact();
+
+        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact);
+
+        completionView = (ContactsCompletionView)findViewById(R.id.searchView);
+        completionView.setAdapter(adapter);
 
     }
 

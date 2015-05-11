@@ -343,6 +343,9 @@ public class WebService {
 
                         Log.d("position_id", position_id);
 
+                        // Get all contacts' information
+                        parser.parseDeptTree();
+
                         Message msg = Message.obtain();
                         msg.what = AppConstants.STAGE_GET_SUCCESS;
                         handler.sendMessage(msg);

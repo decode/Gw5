@@ -1,9 +1,11 @@
 package edu.guet.jjhome.guetw5.util;
 
+import android.util.JsonReader;
 import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -11,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +22,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.guet.jjhome.guetw5.model.Contact;
 import edu.guet.jjhome.guetw5.model.Item;
 
 public class WebParser {
@@ -158,13 +162,50 @@ public class WebParser {
     }
 
     public void parseDeptTree() {
-
         Element deptTree = doc.select("#positiontreejson").first();
         try {
-            JSONObject json = new JSONObject(deptTree.html().toString());
+            JSONArray json = new JSONArray(deptTree.data());
+            JSONObject dept;
+            JSONObject role;
+            JSONObject user;
+            JSONObject user_data;
+            JSONArray children;
+            String name;
+            String code;
+            String dept_code;
+            String dept_name;
+            Contact contact;
+
+            for (int i = 0; i < json.length(); i++) {
+                dept = json.getJSONObject(i);
+                role = dept.getJSONObject("data");
+                dept_code = role.getString("Code");
+                dept_name = role.getString("Name");
+                Log.d("code: ", dept_code);
+                Log.d("role: ", dept_name);
+
+                children = dept.getJSONArray("children");
+                Log.d("children length: ", String.valueOf(children.length()));
+                for(int j=0; j<children.length(); j++) {
+                    user = children.getJSONObject(j);
+                    user_data = user.getJSONObject("data");
+                    code = user_data.getString("Code");
+                    name = user_data.getString("Name");
+                    Log.d("user code: ", code);
+                    Log.d("user name: ", name);
+
+                    contact = Contact.fetchContact(code);
+                    contact.code = code;
+                    contact.name = name;
+                    contact.dept_code = dept_code;
+                    contact.dept_name = dept_name;
+                    contact.save();
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }
 

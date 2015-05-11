@@ -22,14 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <edu.guet.jjhome.guetw5.activity.ContactsCompletionView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/editTo"
-            android:hint="@string/hint_message_to"
-            android:clickable="true" />
+            android:hint="@string/hint_message_to" />
 
         <EditText
             android:layout_width="match_parent"
