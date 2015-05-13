@@ -6,7 +6,6 @@
     tools:context="edu.guet.jjhome.guetw5.activity.CreateMessageActivity"
     android:orientation="vertical">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/message_toolbar"
         android:layout_height="wrap_content"
@@ -17,99 +16,118 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <edu.guet.jjhome.guetw5.activity.ContactsCompletionView
-            android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_message_to" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTitle"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/textView"
-            android:layout_toEndOf="@+id/textView"
-            android:hint="@string/hint_message_title" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:ems="10"
-            android:id="@+id/editContent"
-            android:hint="@string/hint_message_content"
-            android:lines="5"
-            android:gravity="top" />
-
-        EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editDirection"
-            android:hint="@string/hint_message_directions"
-            android:onClick="showDirections"
-            android:editable="false"
-            android:clickable="true"
-            android:inputType="none" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/hint_message_directions"
-            android:id="@+id/textView2"
-            android:onClick="showDirections"
-            android:clickable="true" />
-
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_message_sms"
-            android:id="@+id/switch1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.weiwangcn.betterspinner.library.BetterSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinnerUrgency"
-            android:hint="@string/hint_message_urgency" />
-
-        <com.weiwangcn.betterspinner.library.BetterSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinnerImportant"
-            android:hint="@string/hint_message_important" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <github.chenupt.dragtoplayout.DragTopLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.weiwangcn.betterspinner.library.BetterSpinner
-            android:layout_width="wrap_content"
+        <!--top view-->
+        <LinearLayout
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerLimit"
-            android:hint="@string/hint_message_limit" />
+            android:orientation="vertical">
 
-        <com.weiwangcn.betterspinner.library.BetterSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinnerTrace"
-            android:hint="@string/hint_message_trace" />
-    </LinearLayout>
+            <com.weiwangcn.betterspinner.library.BetterSpinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerUrgency"
+                android:hint="@string/hint_message_urgency" />
+            <com.weiwangcn.betterspinner.library.BetterSpinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerImportant"
+                android:hint="@string/hint_message_important" />
+            <com.weiwangcn.betterspinner.library.BetterSpinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerLimit"
+                android:hint="@string/hint_message_limit" />
+            <com.weiwangcn.betterspinner.library.BetterSpinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerTrace"
+                android:hint="@string/hint_message_trace" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/hint_message_directions"
+                android:id="@+id/textView2"
+                android:clickable="true" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="教务"
+                android:id="@+id/checkBox1" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="科研"
+                android:id="@+id/checkBox2" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="学工"
+                android:id="@+id/checkBox3" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="党政"
+                android:id="@+id/checkBox4" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="工会"
+                android:id="@+id/checkBox5" />
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_message_sms"
+                android:id="@+id/switchSms" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="^向上滑动隐藏^"
+                android:id="@+id/textView"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!--content view-->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <edu.guet.jjhome.guetw5.view.ContactsCompletionView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_message_to" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTitle"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/textView"
+                android:layout_toEndOf="@+id/textView"
+                android:hint="@string/hint_message_title" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/editContent"
+                android:hint="@string/hint_message_content"
+                android:lines="5"
+            android:gravity="top" />
+        </LinearLayout>
+
+    </github.chenupt.dragtoplayout.DragTopLayout>
 
 </LinearLayout>

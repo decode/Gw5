@@ -39,7 +39,7 @@
     <string name="stage_refresh">正在更新...</string>
     <string name="title_activity_message">MessageActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_create_message">CreateMessageActivity</string>
+    <string name="title_activity_create_message">发消息</string>
 
     <string name="action_choose">选择</string>
 
@@ -75,5 +75,9 @@
         <item>党政</item>
         <item>工会</item>
     </string-array>
+
+    <string name="create_message_header">消息选项</string>
+
+    <string name="notify_no_contact">用户不存在,请检查用户名称: </string>
 
 </resources>

@@ -1,8 +1,9 @@
-package edu.guet.jjhome.guetw5.activity;
+package edu.guet.jjhome.guetw5.view;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class ContactsCompletionView extends TokenCompleteTextView {
     protected Object defaultObject(String completionText) {
         //Stupid simple example of guessing if we have an email or not
         int index = completionText.indexOf('@');
+        Log.d("completion text", completionText);
         if (index == -1) {
             return new Contact(completionText, completionText.replace(" ", "") + "@example.com");
         } else {

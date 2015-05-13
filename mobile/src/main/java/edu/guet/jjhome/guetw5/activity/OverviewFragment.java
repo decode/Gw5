@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.R;
@@ -45,6 +47,7 @@ public class OverviewFragment extends Fragment {
     WebService web;
     private String msg_type;
     private String read_status;
+    private FloatingActionButton fab;
 
     // TODO: Rename and change types and number of parameters
     public static OverviewFragment newInstance(int view_type) {
@@ -122,6 +125,9 @@ public class OverviewFragment extends Fragment {
                 }
             }
         });
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(clickListener);
 
         Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
         web = new WebService(getActivity().getBaseContext(), handler);
@@ -260,5 +266,17 @@ public class OverviewFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case R.id.fab:
+                    startActivity(new Intent(getActivity().getBaseContext(), CreateMessageActivity.class));
+                    break;
+            }
+        }
+    };
 
 }

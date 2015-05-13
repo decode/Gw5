@@ -61,4 +61,9 @@ public class Contact extends Model implements Serializable {
         Contact[] contact = new Contact[contacts.size()];
         return contacts.toArray(contact);
     }
+
+    public static boolean existed(String name) {
+        List<Model> user = new Select().from(Contact.class).where("name = ?", name).execute();
+        return user.size() > 0;
+    }
 }

@@ -32,6 +32,8 @@ public class WebService {
     String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
     String message_prefix_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Details/";
     String message_create_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Create";
+    String message_send_url = "http://guetw5.myclub2.com/NoticeTask/Notice/SendNotice";
+    String message_undo_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Undo";
 
     private AsyncHttpClient client;
 
@@ -321,7 +323,6 @@ public class WebService {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
                 noticeNetworkError(responseBody);
             }
 
@@ -364,44 +365,19 @@ public class WebService {
         });
     }
 
-    public void postCreateMessage() {
-        RequestParams params = new RequestParams();
-        // 标题
-        params.put("Subject", "");
-        // 正文
-        params.put("Body", "");
+    public void postCreateMessage(RequestParams params) {
 
-        // 工作方向: Array 0: 科研
-        params.put("Directions", "");
+        client.post(message_send_url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
-        // 发布人: 553f212d-44b2-458a-9c05-03bd6b021156
-        params.put("DisplayCreatorPositionId", "");
+            }
 
-        // 限制选项: 1
-        params.put("LimitOption", "");
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
-        // 跟踪选项: 0
-        params.put("TraceOption", "");
-
-        //
-        params.put("forPositions", "on");
-
-        // 发送短信提醒: false
-        params.put("RemindOnCreate", "false");
-
-        // 阅读超时时间: ""-null
-        params.put("Deadline", "");
-
-        // HoursBeforeDeadLIne: null
-
-        // 紧急度
-        params.put("UrgencyOption", "0");
-
-        // 重要度
-        params.put("ImportantOption", "0");
-
-        // Array 0: 03-553f212d44b2458a9c0503bd6b021156
-        params.put("Targets", "03-553f212d44b2458a9c0503bd6b021156");
+            }
+        });
 
         // Return: success: true, message: "发布成功"
         // After create, redirect to url: http://guetw5.myclub2.com/NoticeTask/Notice/Create
@@ -414,10 +390,24 @@ public class WebService {
 //        </td>
     }
 
-    public void undo() {
-        String url = "http://guetw5.myclub2.com/NoticeTask/Notice/Undo";
+    public void undo(String id) {
         // id: "f02bfefb-c780-47f6-9e8a-3cd99af63b90"
         // post method
         // response: success:true message:撤销成功"
+
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        client.post(message_send_url, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
     }
 }

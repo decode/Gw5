@@ -1,6 +1,5 @@
 package edu.guet.jjhome.guetw5.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,33 +9,54 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.loopj.android.http.PersistentCookieStore;
+import com.daimajia.swipe.SwipeLayout;
+import com.loopj.android.http.RequestParams;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.tokenautocomplete.FilteredArrayAdapter;
+import com.tokenautocomplete.TokenCompleteTextView;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
 
-import org.apache.http.cookie.Cookie;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.model.Contact;
+import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
-import edu.guet.jjhome.guetw5.util.AppUtils;
 import edu.guet.jjhome.guetw5.util.WebService;
+import edu.guet.jjhome.guetw5.view.ContactsCompletionView;
 
-public class CreateMessageActivity extends ActionBarActivity {
+public class CreateMessageActivity extends ActionBarActivity implements Validator.ValidationListener {
 
     private WebService web;
     private Handler handler;
     private BetterSpinner spinner_urgency;
     private BetterSpinner spinner_important;
+    private BetterSpinner spinner_limit;
+    private BetterSpinner spinner_trace;
+    private Switch switchSms;
+    @NotEmpty(message = "请指定至少一个联系人")
     private ContactsCompletionView completionView;
+    @NotEmpty(message = "请输入标题")
+    private EditText editSubject;
+    @NotEmpty(message = "请输入消息正文")
+    private EditText editBody;
+
+    private CheckBox cb1;
+    private CheckBox cb2;
+    private CheckBox cb3;
+    private CheckBox cb4;
+    private CheckBox cb5;
+    private Validator validator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +65,25 @@ public class CreateMessageActivity extends ActionBarActivity {
 
 //        AppUtils.syncCookies(this);
 
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+
         processView();
     }
 
     private void processView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.message_toolbar);
+        toolbar.setTitle(R.string.title_activity_create_message);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handler = new Handler(new MsgHandler());
         web = new WebService(getBaseContext(), handler);
@@ -64,6 +92,8 @@ public class CreateMessageActivity extends ActionBarActivity {
 
         spinner_urgency = (BetterSpinner) findViewById(R.id.spinnerUrgency);
         spinner_important = (BetterSpinner) findViewById(R.id.spinnerImportant);
+        spinner_limit = (BetterSpinner) findViewById(R.id.spinnerLimit);
+        spinner_trace = (BetterSpinner) findViewById(R.id.spinnerTrace);
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
                 R.array.urgency, android.R.layout.simple_dropdown_item_1line);
@@ -77,21 +107,52 @@ public class CreateMessageActivity extends ActionBarActivity {
 //        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_urgency.setAdapter(adapter1);
         spinner_important.setAdapter(adapter2);
+        spinner_limit.setAdapter(adapter3);
+        spinner_trace.setAdapter(adapter4);
 
         Contact[] contact = Contact.getAllContact();
+        contact = new Contact[] {
+                new Contact("aaaaa", "1111111"),
+                new Contact("abaaa", "1111111"),
+                new Contact("acaaa", "1111111"),
+                new Contact("ddd-aaa", "1111111"),
+                new Contact("bbbbb", "1111111"),
+                new Contact("ccccc", "1111111"),
+                new Contact("ddddd", "1111111")
+        };
 
-        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact);
+        FilteredArrayAdapter<Contact> adapter = new FilteredArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact) {
+            @Override
+            protected boolean keepObject(Contact obj, String mask) {
+                mask = mask.toLowerCase();
+                return obj.getName().toLowerCase().contains(mask);
+            }
+        };
 
         completionView = (ContactsCompletionView)findViewById(R.id.searchView);
         completionView.setAdapter(adapter);
+        completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+        completionView.setThreshold(1);
+        completionView.allowDuplicates(false);
 
+        editSubject = (EditText) findViewById(R.id.editTitle);
+        editBody = (EditText) findViewById(R.id.editContent);
+        
+        switchSms = (Switch) findViewById(R.id.switchSms);
+
+        cb1 = (CheckBox) findViewById(R.id.checkBox1);
+        cb2 = (CheckBox) findViewById(R.id.checkBox2);
+        cb3 = (CheckBox) findViewById(R.id.checkBox3);
+        cb4 = (CheckBox) findViewById(R.id.checkBox4);
+        cb5 = (CheckBox) findViewById(R.id.checkBox5);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_create_message, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+//        return true;
     }
 
     @Override
@@ -106,7 +167,117 @@ public class CreateMessageActivity extends ActionBarActivity {
             return true;
         }
 
+        if (id == R.id.action_send) {
+            validator.validate();
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void makePost() {
+        List<Object> list = completionView.getObjects();
+        Contact receiver;
+        ArrayList<String> receivers = new ArrayList<>();
+        for(int i=0; i<list.size(); i++) {
+            receiver = (Contact) list.get(i);
+//            if (!Contact.existed(receiver.getName())) {
+//                Toast.makeText(this, getString(R.string.notify_no_contact) + receiver.name, Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+            receivers.add(receiver.getCode());
+        }
+        Log.d("send message to: ", receivers.toString());
+
+        String subject = editSubject.getText().toString();
+        String body = editBody.getText().toString();
+        String sms = String.valueOf(switchSms.isChecked());
+
+        String urgency = spinner_urgency.getText().toString();
+        if (urgency.equals("紧急"))
+            urgency = "1";
+        else
+            urgency = "0";
+
+        String important = spinner_important.getText().toString();
+        if (important.equals("重要"))
+            important = "1";
+        else
+            important = "0";
+        String limit = spinner_limit.getText().toString();
+        if (limit.contains("不限制"))
+            limit = "0";
+        else
+            limit = "1";
+        String trace = spinner_trace.getText().toString();
+        if (trace.contains("全部"))
+            trace = "1";
+        else
+            trace = "0";
+
+        Log.d("subject:", subject);
+        Log.d("body:", body);
+        Log.d("sms:", sms);
+
+        Log.d("urgency:", urgency);
+        Log.d("important:", important);
+        Log.d("limit:", limit);
+        Log.d("trace:", trace);
+
+        ArrayList<String> directions = new ArrayList<>();
+        if (cb1.isChecked())
+            directions.add(cb1.getText().toString());
+        if (cb2.isChecked())
+            directions.add(cb2.getText().toString());
+        if (cb3.isChecked())
+            directions.add(cb3.getText().toString());
+        if (cb4.isChecked())
+            directions.add(cb4.getText().toString());
+        if (cb5.isChecked())
+            directions.add(cb5.getText().toString());
+        if (directions.size() == 0)
+            directions.add(cb1.getText().toString());
+        Log.d("direction:", directions.toString());
+
+
+        RequestParams params = new RequestParams();
+        // 标题
+        params.put("Subject", subject);
+        // 正文
+        params.put("Body", body);
+
+        // 工作方向: Array 0: 科研
+        params.put("Directions", directions.toArray());
+
+        // 发布人: 553f212d-44b2-458a-9c05-03bd6b021156
+        params.put("DisplayCreatorPositionId", User.currentUser().position_id);
+
+        // 限制选项: 1
+        params.put("LimitOption", limit);
+
+        // 跟踪选项: 0
+        params.put("TraceOption", trace);
+
+        //
+        params.put("forPositions", "on");
+
+        // 发送短信提醒: false
+        params.put("RemindOnCreate", sms);
+
+        // 阅读超时时间: ""-null
+        params.put("Deadline", "");
+
+        // HoursBeforeDeadLIne: null
+
+        // 紧急度
+        params.put("UrgencyOption", urgency);
+
+        // 重要度
+        params.put("ImportantOption", important);
+
+        // Array 0: 03-553f212d44b2458a9c0503bd6b021156
+        params.put("Targets", receivers.toString());
+
+        Log.d("message params:", params.toString());
     }
 
     public void showDirections(View view) {
@@ -130,10 +301,33 @@ public class CreateMessageActivity extends ActionBarActivity {
                 .show();
     }
 
-    public void showContacts(View view) {
-
+    public void showOptions(View view) {
+//        View layout_option = findViewById(R.id.layoutOptions);
+//        if (layout_option.getVisibility() == View.GONE)
+//            layout_option.setVisibility(View.VISIBLE);
+//        else
+//            layout_option.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onValidationSucceeded() {
+        makePost();
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     private class MsgHandler implements Handler.Callback {
         @Override
