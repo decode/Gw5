@@ -34,10 +34,10 @@ public class ContactsCompletionView extends TokenCompleteTextView {
     @Override
     protected Object defaultObject(String completionText) {
         //Stupid simple example of guessing if we have an email or not
-        int index = completionText.indexOf('@');
+        int index = completionText.indexOf('-');
         Log.d("completion text", completionText);
         if (index == -1) {
-            return new Contact(completionText, completionText.replace(" ", "") + "@example.com");
+            return Contact.currentContact();
         } else {
             return new Contact(completionText.substring(0, index), completionText);
         }

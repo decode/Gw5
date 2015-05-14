@@ -55,17 +55,17 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             Date d = new Date(p.getSent_at());
             viewHolder.tSent_at.setText(df.format(d));
 
-            if (p.read_status != null) {
-                if (p.read_status.equals(AppConstants.MSG_STATUS_UNREAD)) {
-                    viewHolder.tSender.setTextColor(Color.BLACK);
-                    viewHolder.tContent.setTextColor(Color.BLACK);
-                    viewHolder.tSent_at.setTextColor(Color.BLACK);
-                } else {
-                    viewHolder.tSender.setTextColor(Color.GRAY);
-                    viewHolder.tContent.setTextColor(Color.GRAY);
-                    viewHolder.tSent_at.setTextColor(Color.GRAY);
-                }
-            }
+//            if (p.read_status != null) {
+//                if (p.read_status.equals(AppConstants.MSG_STATUS_UNREAD)) {
+//                    viewHolder.tSender.setTextColor(Color.BLACK);
+//                    viewHolder.tContent.setTextColor(Color.BLACK);
+//                    viewHolder.tSent_at.setTextColor(Color.BLACK);
+//                } else {
+//                    viewHolder.tSender.setTextColor(Color.GRAY);
+//                    viewHolder.tContent.setTextColor(Color.GRAY);
+//                    viewHolder.tSent_at.setTextColor(Color.GRAY);
+//                }
+//            }
         }
 
         return convertView;

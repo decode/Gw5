@@ -52,6 +52,9 @@ public class Item extends Model implements Serializable {
     @Column(name = "importance")
     public String importance;
 
+    @Column(name = "directions")
+    public String directions;
+
     public Item() {
         message_id = "";
         source = "";
@@ -150,6 +153,7 @@ public class Item extends Model implements Serializable {
         Item item = new Select().from(Item.class).where("message_id = ?", message_id).orderBy("id ASC").executeSingle();
         if (item == null) {
             item = new Item();
+            item.message_id = message_id;
             Log.d("Not find existed item", "create new");
         }
         return item;

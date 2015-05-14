@@ -1,9 +1,6 @@
 package edu.guet.jjhome.guetw5.util;
 
-import android.util.JsonReader;
 import android.util.Log;
-
-import com.activeandroid.ActiveAndroid;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,17 +10,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import edu.guet.jjhome.guetw5.model.Contact;
 import edu.guet.jjhome.guetw5.model.Item;
+import edu.guet.jjhome.guetw5.model.User;
 
 public class WebParser {
     private Document doc;
@@ -124,12 +119,10 @@ public class WebParser {
     private Item prepareItem(Elements columns) {
         Element msg_content = columns.get(0).select("a").first();
         String source = msg_content.attr("href");
-        String message_id;
         Item item;
-        if (source.contains("Details/")) {
-            message_id = source.substring(source.indexOf("Details/") + 8, source.length());
+        String message_id = messageId(source);
+        if (message_id != null) {
             item = Item.fetchItem(message_id);
-
             // Message id
             item.message_id = message_id;
         } else {
@@ -150,6 +143,14 @@ public class WebParser {
         Element content = doc.select("div.notice-body").first();
         item.content = content.text();
 
+        Elements info = doc.select("span.label.label-success");
+        ArrayList<String> directions = new ArrayList<>();
+        for(Element direction : info) {
+            Log.d("parseMessageDetail", direction.text());
+            directions.add(direction.text());
+        }
+        item.directions =  directions.toArray(new String[directions.size()]).toString();
+
 //        Element unread_role = doc.select("div.notice-trace > div.alert.alert-error").first();
 //        Element read_role = doc.select("div.notice-trace > div.alert.alert-success").first();
         return item;
@@ -158,7 +159,6 @@ public class WebParser {
     public String parseCreateMessagePage() {
         Element positionId = doc.select("input#CreatorPositionId").first();
         return positionId.attr("value");
-
     }
 
     public void parseDeptTree() {
@@ -207,5 +207,66 @@ public class WebParser {
         }
     }
 
+    /**
+     * When post a message, fetch the message_id from message list page.
+     * @return message id
+     */
+    public String parseCreatedMessageId() {
+        Element element = doc.select("tbody > tr > td > a").first();
+        String source = element.attr("href");
+        String message_id = messageId(source);
+        return message_id;
+    }
+
+    public void parseSendMessage() {
+        Elements trs = doc.select("tbody > tr:nth-child(odd)");
+        Log.d("column size: ", String.valueOf(trs.size()));
+        Elements tds;
+        Element td;
+        Item item;
+        for (Element tr : trs) {
+
+            tds = tr.select("td");
+            // title
+            td = tds.get(0);
+            String source = td.select("a").attr("href");
+            String message_id = messageId(source);
+            item = Item.fetchItem(message_id);
+            item.title = td.text();
+
+            // directions
+            // TODO: save message directions
+            td = tds.get(1);
+            item.directions = td.text();
+
+            // sent time
+            td = tds.get(2);
+            DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
+            Date date = null;
+            try {
+                date = source_format.parse(td.text().trim());
+                item.setSent_at(date.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // status
+            // TODO: save message status
+            td = tds.get(3);
+
+            item.msg_type = AppConstants.MSG_SENT;
+            item.sender = User.currentUser().username;
+
+            Log.d("Send message information:", item.sender + item.title + item.directions + item.message_id + item.sent_at);
+            item.save();
+        }
+    }
+
+    private String messageId(String url) {
+        if (url.contains("Details/")) {
+            return url.substring(url.indexOf("Details/") + 8, url.length());
+        }
+        return null;
+    }
 }
 

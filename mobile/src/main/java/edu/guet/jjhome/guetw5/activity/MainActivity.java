@@ -2,6 +2,7 @@ package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,14 +13,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 import com.mikepenz.materialdrawer.Drawer;
@@ -27,25 +26,13 @@ import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.ogaclejapan.smarttablayout.utils.ViewPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.ViewPagerItems;
-import com.ogaclejapan.smarttablayout.utils.v4.Bundler;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
-
-import java.util.ArrayList;
 
 import edu.guet.jjhome.guetw5.R;
-import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
-import edu.guet.jjhome.guetw5.model.Item;
 import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
-import edu.guet.jjhome.guetw5.util.WebService;
 
 public class MainActivity extends ActionBarActivity
         implements DrawerFragment.FragmentDrawerListener {
@@ -116,6 +103,7 @@ public class MainActivity extends ActionBarActivity
         headerResult = new AccountHeader()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.black_gradient)
+                .withCompactStyle(true)
                 .addProfiles(
                         initAccount()
                 )
@@ -136,9 +124,9 @@ public class MainActivity extends ActionBarActivity
                         new PrimaryDrawerItem().withName(R.string.nav_item_unread),
                         new PrimaryDrawerItem().withName(R.string.nav_item_read),
                         new PrimaryDrawerItem().withName(R.string.nav_item_public),
+                        new PrimaryDrawerItem().withName(R.string.nav_item_sent),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.nav_item_send),
-                        new SecondaryDrawerItem().withName(R.string.nav_item_setting)
+                        new PrimaryDrawerItem().withName(R.string.nav_item_setting)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -154,8 +142,8 @@ public class MainActivity extends ActionBarActivity
                             case 2:
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_PUBLIC, "");
                                 break;
-                            case 4:
-                                startActivity(new Intent(getBaseContext(), CreateMessageActivity.class));
+                            case 3:
+                                fragment = OverviewFragment.newInstance(AppConstants.MSG_SENT, "");
                                 break;
                             case 5:
                                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));

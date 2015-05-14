@@ -16,11 +16,14 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.daimajia.swipe.SwipeLayout;
 import com.loopj.android.http.RequestParams;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
+import com.nispok.snackbar.listeners.EventListener;
 import com.tokenautocomplete.FilteredArrayAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
@@ -57,6 +60,7 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
     private CheckBox cb4;
     private CheckBox cb5;
     private Validator validator;
+    private String created_message_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,21 +78,16 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
     private void processView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.message_toolbar);
         toolbar.setTitle(R.string.title_activity_create_message);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        handler = new Handler(new MsgHandler());
-        web = new WebService(getBaseContext(), handler);
-        web.makeCreatePage();
-
+        if (User.currentUser().position_id == null || Contact.getAllContact().length == 0) {
+            handler = new Handler(new MsgHandler());
+            web = new WebService(getBaseContext(), handler);
+            web.makeCreatePage();
+        }
 
         spinner_urgency = (BetterSpinner) findViewById(R.id.spinnerUrgency);
         spinner_important = (BetterSpinner) findViewById(R.id.spinnerImportant);
@@ -103,23 +102,21 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
                 R.array.limit, android.R.layout.simple_dropdown_item_1line);
         ArrayAdapter<CharSequence> adapter4 = ArrayAdapter.createFromResource(this,
                 R.array.trace, android.R.layout.simple_dropdown_item_1line);
-//        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_urgency.setAdapter(adapter1);
         spinner_important.setAdapter(adapter2);
         spinner_limit.setAdapter(adapter3);
         spinner_trace.setAdapter(adapter4);
 
         Contact[] contact = Contact.getAllContact();
-        contact = new Contact[] {
-                new Contact("aaaaa", "1111111"),
-                new Contact("abaaa", "1111111"),
-                new Contact("acaaa", "1111111"),
-                new Contact("ddd-aaa", "1111111"),
-                new Contact("bbbbb", "1111111"),
-                new Contact("ccccc", "1111111"),
-                new Contact("ddddd", "1111111")
-        };
+//        contact = new Contact[] {
+//                new Contact("aaaaa", "1111111"),
+//                new Contact("abaaa", "1111111"),
+//                new Contact("acaaa", "1111111"),
+//                new Contact("ddd-aaa", "1111111"),
+//                new Contact("bbbbb", "1111111"),
+//                new Contact("ccccc", "1111111"),
+//                new Contact("ddddd", "1111111")
+//        };
 
         FilteredArrayAdapter<Contact> adapter = new FilteredArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact) {
             @Override
@@ -161,16 +158,14 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_send:
+                validator.validate();
+                break;
+            default:
+                onBackPressed();
+                return true;
         }
-
-        if (id == R.id.action_send) {
-            validator.validate();
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -180,10 +175,10 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         ArrayList<String> receivers = new ArrayList<>();
         for(int i=0; i<list.size(); i++) {
             receiver = (Contact) list.get(i);
-//            if (!Contact.existed(receiver.getName())) {
-//                Toast.makeText(this, getString(R.string.notify_no_contact) + receiver.name, Toast.LENGTH_SHORT).show();
-//                return;
-//            }
+            if (!Contact.existed(receiver.getName())) {
+                Toast.makeText(this, R.string.notify_no_contact + receiver.name, Toast.LENGTH_SHORT).show();
+                return;
+            }
             receivers.add(receiver.getCode());
         }
         Log.d("send message to: ", receivers.toString());
@@ -246,10 +241,10 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         params.put("Body", body);
 
         // 工作方向: Array 0: 科研
-        params.put("Directions", directions.toArray());
+        params.put("Directions", directions.toArray(new String[directions.size()]));
 
         // 发布人: 553f212d-44b2-458a-9c05-03bd6b021156
-        params.put("DisplayCreatorPositionId", User.currentUser().position_id);
+        params.put("CreatorPositionId", User.currentUser().position_id);
 
         // 限制选项: 1
         params.put("LimitOption", limit);
@@ -275,9 +270,12 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         params.put("ImportantOption", important);
 
         // Array 0: 03-553f212d44b2458a9c0503bd6b021156
-        params.put("Targets", receivers.toString());
+        params.put("Targets", receivers.toArray(new String[receivers.size()]));
 
         Log.d("message params:", params.toString());
+
+//        web.postCreateMessage(params);
+        showSnackbar();
     }
 
     public void showDirections(View view) {
@@ -299,14 +297,6 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
                 })
                 .positiveText(R.string.action_choose)
                 .show();
-    }
-
-    public void showOptions(View view) {
-//        View layout_option = findViewById(R.id.layoutOptions);
-//        if (layout_option.getVisibility() == View.GONE)
-//            layout_option.setVisibility(View.VISIBLE);
-//        else
-//            layout_option.setVisibility(View.GONE);
     }
 
     @Override
@@ -338,10 +328,66 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
                 case AppConstants.STAGE_GET_SUCCESS:
                     Log.d("success, parse create message", "----------------------");
                     break;
-                case AppConstants.STAGE_NOT_LOGIN:
+                case AppConstants.STAGE_POST_FAILED:
+                    Toast.makeText(getBaseContext(), R.string.stage_post_failed, Toast.LENGTH_LONG).show();
+                    break;
+                case AppConstants.STAGE_POST_SUCCESS:
+                    Toast.makeText(getBaseContext(), R.string.stage_post_success, Toast.LENGTH_SHORT).show();
+                    web.getCreatedMessageId();
+                    break;
+                case AppConstants.STAGE_GET_MESSAGE_ID:
+                    created_message_id = msg.getData().getString(AppConstants.STAGE_GET_MESSAGE_ID_KEY);
+                    if (created_message_id != null) showSnackbar();
+                    else finish();
+                    break;
+                case AppConstants.STAGE_UNDO_MESSAGE_SUCCESS:
+                    Toast.makeText(getBaseContext(), R.string.stage_undo_success, Toast.LENGTH_LONG).show();
+                    finish();
                     break;
             }
             return false;
         }
+    }
+
+    private void showSnackbar() {
+        SnackbarManager.show(
+                Snackbar.with(getApplicationContext())
+                        .text(R.string.notify_ask_undo)
+                        .actionLabel(R.string.action_undo)
+                        .duration(AppConstants.SNACKBAR_DURATION)
+                        .actionListener(new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(Snackbar snackbar) {
+                                if (created_message_id != null)
+                                    web.undo(created_message_id);
+                            }
+                        })
+                        .eventListener(new EventListener() {
+                            @Override
+                            public void onShow(Snackbar snackbar) {
+                            }
+
+                            @Override
+                            public void onShowByReplace(Snackbar snackbar) {
+                            }
+
+                            @Override
+                            public void onShown(Snackbar snackbar) {
+                            }
+
+                            @Override
+                            public void onDismiss(Snackbar snackbar) {
+                            }
+
+                            @Override
+                            public void onDismissByReplace(Snackbar snackbar) {
+                            }
+
+                            @Override
+                            public void onDismissed(Snackbar snackbar) {
+                                finish();
+                            }
+                        }) // Snackbar's EventListener
+                , this);
     }
 }

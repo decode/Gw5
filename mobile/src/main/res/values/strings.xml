@@ -13,6 +13,7 @@
     <string name="nav_item_read">已读消息</string>
     <string name="nav_item_unread">未读消息</string>
     <string name="nav_item_send">发布消息</string>
+    <string name="nav_item_sent">已发消息</string>
     <string name="nav_item_setting">设置</string>
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
@@ -31,11 +32,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
-    <string name="action_login">Login</string>
-    <string name="action_logout">Logout</string>
+    <string name="action_login">登录</string>
+    <string name="action_logout">注销</string>
 
     <string name="state_get_error">获取页面失败,请检查网络连接</string>
     <string name="stage_not_login">您没有登录,请重新登录</string>
+    <string name="stage_post_failed">发送消息失败</string>
+    <string name="stage_post_success">发送消息成功</string>
+    <string name="stage_undo_success">撤销消息成功</string>
     <string name="stage_refresh">正在更新...</string>
     <string name="title_activity_message">MessageActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -79,5 +83,7 @@
     <string name="create_message_header">消息选项</string>
 
     <string name="notify_no_contact">用户不存在,请检查用户名称: </string>
+    <string name="notify_ask_undo">消息已发送, 是否要撤销发送?</string>
+    <string name="action_undo">撤销</string>
 
 </resources>

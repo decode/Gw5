@@ -20,15 +20,24 @@ public class AppConstants {
     public static final int STAGE_PASSWORD_ERROR = 7;
     public static final int STAGE_LOGIN_FAILED = 8;
     public static final int STAGE_LOGOUT = 9;
+    public static final int STAGE_POST_FAILED = 10;
+    public static final int STAGE_POST_SUCCESS = 11;
+    public static final int STAGE_GET_MESSAGE_ID = 12;
+    public static final int STAGE_UNDO_MESSAGE_SUCCESS = 13;
+
+    public static final String STAGE_GET_ERROR_KEY = "ERROR_MSG";
+    public static final String STAGE_GET_MESSAGE_ID_KEY = "MESSAGE_ID";
 
     public static final String MSG_ALL = "all";
     public static final String MSG_PUBLIC = "public";
+    public static final String MSG_SENT = "sent";
 
-    public static final String STAGE_GET_ERROR_KEY = "ERROR_MSG";
     public static final String MSG_LIST = "MESSAGES";
 
     public static final String PREF_AUTOLOGIN = "pref_auto_login";
 
     public static final String MSG_STATUS_READ = "已读";
     public static final String MSG_STATUS_UNREAD = "未读";
+
+    public static final long SNACKBAR_DURATION = 5000;
 }

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,10 +23,8 @@ public class DetailsActivity extends ActionBarActivity {
     private Item item;
 
     private TextView text_status;
-    private TextView text_sender;
     private TextView text_title;
     private TextView text_content;
-    private TextView text_sent_at;
     private TextView text_receiver;
     private TextView text_emergency;
     private TextView text_importance;
@@ -66,15 +65,13 @@ public class DetailsActivity extends ActionBarActivity {
 //
 //            getSupportFragmentManager().beginTransaction().add(R.layout.item_detail, details).commit();
             item = (Item) getIntent().getSerializableExtra("item");
-            text_sender.setText(item.getSender());
             text_title.setText(item.title);
-            text_receiver.setText(item.getReceiver());
+            text_receiver.setText(getString(R.string.hint_message_to) + item.getReceiver());
             text_emergency.setText(item.getEmergency());
             text_importance.setText(item.getImportance());
 
             DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
             Date d = new Date(item.getSent_at());
-            text_sent_at.setText(df.format(d));
 
             toolbar.setTitle(item.sender + " - " + df.format(d));
 
@@ -88,15 +85,12 @@ public class DetailsActivity extends ActionBarActivity {
                 text_content.setText(item.content);
             }
         }
-
     }
 
     private void processViews() {
         text_status = (TextView) findViewById(R.id.text_status);
-        text_sender = (TextView) findViewById(R.id.text_sender);
         text_title = (TextView) findViewById(R.id.text_title);
         text_content = (TextView) findViewById(R.id.text_content);
-        text_sent_at = (TextView) findViewById(R.id.text_sent_at);
         text_receiver= (TextView) findViewById(R.id.text_receiver);
         text_emergency = (TextView) findViewById(R.id.text_Emergency);
         text_importance = (TextView) findViewById(R.id.text_importance);

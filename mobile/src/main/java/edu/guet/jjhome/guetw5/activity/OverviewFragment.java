@@ -129,9 +129,9 @@ public class OverviewFragment extends Fragment {
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(clickListener);
 
-        Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getBaseContext(), R.string.action_refresh_status, Toast.LENGTH_SHORT).show();
         web = new WebService(getActivity().getBaseContext(), handler);
-        web.fetchContent(msg_type, itemAdapter);
+        web.fetchContent(msg_type);
 
         return rootView;
     }
@@ -163,11 +163,11 @@ public class OverviewFragment extends Fragment {
                 case AppConstants.STAGE_LOGIN:
                     break;
                 case AppConstants.STAGE_GET_PAGE:
-                    txt_status.setText("updating...");
+                    txt_status.setText(R.string.action_refresh_status);
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_ERROR:
-                    txt_status.setText("Get page error, please check your web connection");
+                    txt_status.setText(R.string.state_get_error);
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
@@ -230,7 +230,7 @@ public class OverviewFragment extends Fragment {
         if (id == R.id.action_overview_refresh) {
             Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
             web = new WebService(getActivity().getBaseContext(), handler);
-            web.fetchContent(msg_type, itemAdapter);
+            web.fetchContent(msg_type);
         }
         if (id == R.id.action_login) {
             Intent intent = new Intent(getActivity(), LoginActivity.class);

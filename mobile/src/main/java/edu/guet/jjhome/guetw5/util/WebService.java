@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -33,7 +34,9 @@ public class WebService {
     String message_prefix_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Details/";
     String message_create_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Create";
     String message_send_url = "http://guetw5.myclub2.com/NoticeTask/Notice/SendNotice";
+    String message_created_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Created";
     String message_undo_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Undo";
+    String message_created_and_undo_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Created?andundo=true&andundoCheck=on";
 
     private AsyncHttpClient client;
 
@@ -131,9 +134,9 @@ public class WebService {
 
     /**
      * TODO: parse next page to the end.
-     * @param adapter
+     * @param conent_type
      */
-    public void fetchContent(final String conent_type, final ItemAdapter adapter) {
+    public void fetchContent(final String conent_type) {
         String dest_url = "";
         switch (conent_type) {
             case AppConstants.MSG_PUBLIC:
@@ -141,6 +144,9 @@ public class WebService {
                 break;
             case AppConstants.MSG_ALL:
                 dest_url = person_url;
+                break;
+            case AppConstants.MSG_SENT:
+                dest_url = message_created_and_undo_url;
                 break;
         }
         Log.d("message type in webservice", dest_url);
@@ -162,15 +168,17 @@ public class WebService {
                     Log.d("Finished fetching", "get page data success");
                     if (isLogin(response)) {
                         WebParser parser = new WebParser(response);
-                        ArrayList<Item> items;
-                        if (conent_type.equals(AppConstants.MSG_ALL)) {
-                            items = parser.parseItemList();
-                        } else {
-                            items = parser.parseCommonList();
+
+                        switch (conent_type) {
+                            case AppConstants.MSG_ALL:
+                                parser.parseItemList();
+                                break;
+                            case AppConstants.MSG_PUBLIC:
+                                parser.parseCommonList();
+                                break;
+                            case AppConstants.MSG_SENT:
+                                parser.parseSendMessage();
                         }
-//                        adapter.clear();
-//                        adapter.addAll(items);
-//                        adapter.notifyDataSetChanged();
 
                         msg.what = AppConstants.STAGE_GET_SUCCESS;
                         handler.sendMessage(msg);
@@ -267,6 +275,7 @@ public class WebService {
             msg.what = AppConstants.STAGE_GET_ERROR;
             Bundle b = new Bundle();
             b.putString(AppConstants.STAGE_GET_ERROR_KEY, "Can't access website");
+            msg.setData(b);
             handler.sendMessage(msg);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -370,7 +379,23 @@ public class WebService {
         client.post(message_send_url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Message msg = Message.obtain();
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    Log.d("after post message:", response);
+                    JSONObject json = new JSONObject(response);
+                    if (json.getString("success").equals("false")) {
+                        msg.what = AppConstants.STAGE_POST_FAILED;
+                        handler.sendMessage(msg);
+                    }
 
+                    msg.what = AppConstants.STAGE_POST_SUCCESS;
+                    handler.sendMessage(msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -390,6 +415,35 @@ public class WebService {
 //        </td>
     }
 
+    public void getCreatedMessageId() {
+
+        client.get(message_created_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    WebParser web = new WebParser(response);
+                    String message_id = web.parseCreatedMessageId();
+                    Log.d("webservice get messge_id after post:", message_id);
+
+                    Message msg = Message.obtain();
+                    Bundle b = new Bundle();
+                    msg.what = AppConstants.STAGE_GET_MESSAGE_ID;
+                    b.putString(AppConstants.STAGE_GET_MESSAGE_ID_KEY, message_id);
+                    msg.setData(b);
+                    handler.sendMessage(msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+    }
+
     public void undo(String id) {
         // id: "f02bfefb-c780-47f6-9e8a-3cd99af63b90"
         // post method
@@ -397,11 +451,42 @@ public class WebService {
 
         RequestParams params = new RequestParams();
         params.put("id", id);
-        client.post(message_send_url, params, new AsyncHttpResponseHandler() {
+        client.post(message_undo_url, params, new AsyncHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    Log.d("undo message", response);
 
+                    Message msg = Message.obtain();
+                    msg.what = AppConstants.STAGE_UNDO_MESSAGE_SUCCESS;
+                    handler.sendMessage(msg);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("webservice remove message_id failed", "");
+            }
+        });
+    }
+
+    public void getCreatedMessages() {
+
+        client.get(message_created_and_undo_url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    response = new String(responseBody, "UTF-8");
+                    WebParser web = new WebParser(response);
+                    web.parseSendMessage();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

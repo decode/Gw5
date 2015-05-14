@@ -4,11 +4,14 @@ import android.util.Log;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.activeandroid.util.SQLiteUtils;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Table(name = "Contacts")
 public class Contact extends Model implements Serializable {
     @Column(name = "name")
     public String name;
@@ -65,5 +68,14 @@ public class Contact extends Model implements Serializable {
     public static boolean existed(String name) {
         List<Model> user = new Select().from(Contact.class).where("name = ?", name).execute();
         return user.size() > 0;
+    }
+
+    public static Contact currentContact() {
+//        Contact c = new Select().from(Contact.class).where("name LIKE ?", User.currentUser().username).executeSingle();
+        Contact c = (Contact) SQLiteUtils.rawQuery(Contact.class,
+                "SELECT * from Contacts where name LIKE ?",
+                new String[]{'%' + User.currentUser().username + '%'}).get(0);
+        Log.d("current contact: ", c.name);
+        return c;
     }
 }

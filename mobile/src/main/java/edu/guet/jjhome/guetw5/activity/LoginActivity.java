@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Application;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +19,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,7 +39,6 @@ import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.util.WebService;
-import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 
 /**
@@ -390,12 +386,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     showProgress(false);
 //                    Toast.makeText(getBaseContext(), getString(R.string.login_success), Toast.LENGTH_SHORT).show();
 //                    if (isAutoLogin()) {
-                    if (true) {
-                        User u = User.fetch(mEmailView.getText().toString(), mPasswordView.getText().toString());
-                        u.current = true;
-                        u.save();
-                    }
-//                    Intent returnIntent = new Intent();
+                    User u = User.fetch(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    u.current = true;
+                    u.save();
+                    //                    Intent returnIntent = new Intent();
 //                    setResult(RESULT_OK,returnIntent);
 //                    finish();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
