@@ -2,7 +2,6 @@ package edu.guet.jjhome.guetw5.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,13 +18,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.activeandroid.query.Select;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -102,8 +104,8 @@ public class MainActivity extends ActionBarActivity
     private void initDrawer() {
         headerResult = new AccountHeader()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.black_gradient)
-                .withCompactStyle(true)
+                .withHeaderBackground(R.drawable.bg)
+                .withHeaderBackgroundScaleType(ImageView.ScaleType.CENTER_CROP)
                 .addProfiles(
                         initAccount()
                 )
@@ -126,7 +128,8 @@ public class MainActivity extends ActionBarActivity
                         new PrimaryDrawerItem().withName(R.string.nav_item_public),
                         new PrimaryDrawerItem().withName(R.string.nav_item_sent),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.nav_item_setting)
+                        new PrimaryDrawerItem().withName(R.string.nav_item_setting),
+                        new SecondaryDrawerItem().withName(R.string.nav_item_help)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -148,6 +151,10 @@ public class MainActivity extends ActionBarActivity
                             case 5:
                                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                                 break;
+                            case 6:
+                                showDirections();
+//                                startActivity(new Intent(getBaseContext(), AboutActivity.class));
+                                break;
                         }
 
                         if (fragment != null) {
@@ -163,6 +170,18 @@ public class MainActivity extends ActionBarActivity
         result.setSelection(0, true);
     }
 
+    public void showDirections() {
+        String content = getString(R.string.about_tips) + "\n"
+                + getString(R.string.about_tips_content) + "\n"
+                + getString(R.string.about_disclaimer) + "\n"
+                + getString(R.string.about_disclaimer_content) + "\n"
+                + getString(R.string.about_author_info);
+        new MaterialDialog.Builder(this)
+                .title(R.string.about_title)
+                .content(content)
+                .positiveText(R.string.action_back)
+                .show();
+    }
 
     private ProfileDrawerItem initAccount() {
         User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();

@@ -109,7 +109,7 @@ public class WebService {
     }
 
     public void logout() {
-        CookieManager.getInstance().removeAllCookie();
+//        CookieManager.getInstance().removeAllCookie();
 
         client.get(logout_url, new AsyncHttpResponseHandler() {
             @Override
@@ -207,9 +207,10 @@ public class WebService {
             msg.what = AppConstants.STAGE_GET_SUCCESS;
             try {
                 JSONObject json = new JSONObject(response);
-                String remote_id = json.getString("id");
-                String name = json.getString("name");
-                String sex = json.getString("sex");
+                JSONObject data = json.getJSONObject("data");
+                String remote_id = data.getString("Id");
+                String name = data.getString("Name");
+                String sex = data.getString("Sex");
                 Log.d("remote_id:   ", remote_id + name + sex);
             } catch (JSONException e) {
                 e.printStackTrace();

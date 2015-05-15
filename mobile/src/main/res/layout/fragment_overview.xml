@@ -15,7 +15,7 @@
     <TextView android:id="@+id/text_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No data"
+        android:text="@string/list_no_data"
         android:visibility="invisible"
         android:background="@color/primary"
         android:gravity="center" />

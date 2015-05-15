@@ -1,12 +1,16 @@
 package edu.guet.jjhome.guetw5.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -45,6 +49,10 @@ public class DetailsActivity extends ActionBarActivity {
                 finish();
             }
         });
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         processViews();
 
@@ -121,5 +129,33 @@ public class DetailsActivity extends ActionBarActivity {
             }
             return false;
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_create_message, menu);
+        return super.onCreateOptionsMenu(menu);
+//        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = menuItem.getItemId();
+        switch (id) {
+            case R.id.action_open_browser:
+                Intent i = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(item.source));
+                startActivity(i);
+                break;
+            default:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
     }
 }

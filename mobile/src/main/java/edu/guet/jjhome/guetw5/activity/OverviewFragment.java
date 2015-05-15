@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.adapter.ItemAdapter;
@@ -129,7 +130,7 @@ public class OverviewFragment extends Fragment {
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(clickListener);
 
-        Toast.makeText(getActivity().getBaseContext(), R.string.action_refresh_status, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity().getBaseContext(), R.string.action_refresh_status, Toast.LENGTH_SHORT).show();
         web = new WebService(getActivity().getBaseContext(), handler);
         web.fetchContent(msg_type);
 
@@ -172,22 +173,32 @@ public class OverviewFragment extends Fragment {
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
 //                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotifications(new_count);
-                    txt_status.setVisibility(View.INVISIBLE);
-                    lv_items.setVisibility(View.VISIBLE);
 
-                    itemAdapter.clear();
 //                    itemAdapter.addAll(Item.getItemsByType(msg_type));
-                    itemAdapter.addAll(Item.getItemsByTypeAndStatus(msg_type, read_status));
+                    List<Item> items = Item.getItemsByTypeAndStatus(msg_type, read_status);
                     Log.d("after success, test msg_type", msg_type);
-                    itemAdapter.notifyDataSetChanged();
+
+                    if (items.size() > 0) {
+                        itemAdapter.clear();
+                        itemAdapter.addAll(items);
+                        itemAdapter.notifyDataSetChanged();
+
+                        txt_status.setVisibility(View.INVISIBLE);
+                        lv_items.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        txt_status.setText(R.string.list_no_data);
+                        txt_status.setVisibility(View.VISIBLE);
+                        lv_items.setVisibility(View.INVISIBLE);
+                    }
                     break;
                 case AppConstants.STAGE_NOT_LOGIN:
-                    txt_status.setText("You are not login. Please re-login");
+                    txt_status.setText(R.string.stage_not_login);
                     txt_status.setVisibility(View.VISIBLE);
                     lv_items.setVisibility(View.INVISIBLE);
                     break;
                 case AppConstants.STAGE_LOGOUT:
-                    Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.stage_logout_success, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getActivity(), LoginActivity.class));
             }
             return false;
@@ -228,7 +239,7 @@ public class OverviewFragment extends Fragment {
 //        }
 
         if (id == R.id.action_overview_refresh) {
-            Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
             web = new WebService(getActivity().getBaseContext(), handler);
             web.fetchContent(msg_type);
         }
@@ -241,21 +252,20 @@ public class OverviewFragment extends Fragment {
             User u = User.currentUser();
             if (u != null) {
                 u.delete();
-//                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
-//                my_drawer.accountChange();
-                web = new WebService(getActivity().getBaseContext(), handler);
-                web.logout();
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(AppConstants.PREF_AUTOLOGIN, false);
                 editor.commit();
 
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, 1);
+//                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
+//                my_drawer.accountChange();
+                web = new WebService(getActivity().getBaseContext(), handler);
+                web.logout();
 
-
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
             }
         }
 
