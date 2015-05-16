@@ -133,7 +133,9 @@ public class WebParser {
         item.title = msg_content.text().trim();
 
         // Source
-        item.source = msg_content.attr("href");
+        if (!source.contains(WebService.base_url))
+            source = WebService.base_url + source;
+        item.source = source;
 
         return item;
     }

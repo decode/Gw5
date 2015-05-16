@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,7 +14,7 @@
         app:navigationContentDescription="@string/abc_action_bar_up_description"
         android:background="?attr/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -56,42 +57,72 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:showDividers="middle">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/text_title"
-            android:singleLine="false"
-            android:textStyle="bold" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scrollView" >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:showDividers="middle">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/text_content" />
-        </ScrollView>
+                android:id="@+id/text_title"
+                android:singleLine="false"
+                android:textStyle="bold" />
 
-        <TextView
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scrollView" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/text_content" />
+            </ScrollView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/text_status"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menu_float"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            app:menu_colorNormal="@color/fab_primary"
+            fab:menu_colorPressed="@color/fab_pressed"
+            app:menu_icon="@drawable/ic_action_chat"
+            android:layout_marginBottom="@dimen/fab_margin_bottom"
+            android:layout_marginRight="@dimen/fab_margin_right"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/text_status"
-            android:visibility="invisible" />
-    </LinearLayout>
+            android:layout_height="wrap_content">
 
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/action_reply"
+                android:src="@drawable/ic_action_forward" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_browser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/action_open_browser"
+                android:src="@drawable/ic_action_browser" />
+        </com.github.clans.fab.FloatingActionMenu>
+    </RelativeLayout>
 
 </LinearLayout>

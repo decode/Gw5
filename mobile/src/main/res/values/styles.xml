@@ -17,7 +17,7 @@
         <item name="material_drawer_selected">@color/colorPrimary</item>
         <item name="material_drawer_selected_text">@color/md_white_1000</item>
         <item name="material_drawer_header_selection_text">@color/material_drawer_header_selection_text</item>
-
+        <item name="android:textColorPrimary">@color/md_black_1000</item>
     </style>
 
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light">

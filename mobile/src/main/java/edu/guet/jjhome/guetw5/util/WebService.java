@@ -27,6 +27,7 @@ import edu.guet.jjhome.guetw5.model.User;
 public class WebService {
 
     private final PersistentCookieStore myCookieStore;
+    public static final String base_url = "http://guetw5.myclub2.com";
     String login_url = "http://guetw5.myclub2.com/Account/LogOn";
     String logout_url = "http://guetw5.myclub2.com/Account/LogOff";
     String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";

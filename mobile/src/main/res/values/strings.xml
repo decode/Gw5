@@ -30,7 +30,7 @@
     <string name="action_refresh_status">正在更新...</string>
     <string name="action_settings">设置</string>
     <string name="action_send">发送</string>
-    <string name="action_open_browser">浏览器</string>
+    <string name="action_open_browser">浏览器打开</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
@@ -100,7 +100,7 @@
         2. 创建消息的时候，如果对消息选项不进行设置，则使用默认选项发送消息，
         默认选项为：紧急度（普通），重要度（一般），限制选项（仅限名单中的部门或人员查看），跟踪选项（仅跟踪预设名单）
         工作方向（教务），发送短信提示（是），这样可以节省发消息时间。\n
-        3. 消息设置页面可以上划收起。\n
+        3. 消息设置页面可以在发消息界面下滑打开，上划收起。\n
         4. 发送消息后，会有5秒钟的撤销消息提示，可以把之前发的消息撤销，提示到时间后，自动返回消息列表页面。\n
     </string>
     <string name="about_disclaimer">免责声明</string>
@@ -111,5 +111,6 @@
         由于发送消息功能没有进行充分测试，因此只能保证发送给自己的功能良好，请谨慎使用。\n
         如有任何问题和建议请联系我。</string>
     <string name="about_author_info">jjhome at guet.edu.cn</string>
+    <string name="action_reply">回复</string>
 
 </resources>

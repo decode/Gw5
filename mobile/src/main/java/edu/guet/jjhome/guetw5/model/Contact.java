@@ -72,9 +72,13 @@ public class Contact extends Model implements Serializable {
 
     public static Contact currentContact() {
 //        Contact c = new Select().from(Contact.class).where("name LIKE ?", User.currentUser().username).executeSingle();
+        return findContactByName(User.currentUser().username);
+    }
+
+    public static Contact findContactByName(String name) {
         Contact c = (Contact) SQLiteUtils.rawQuery(Contact.class,
                 "SELECT * from Contacts where name LIKE ?",
-                new String[]{'%' + User.currentUser().username + '%'}).get(0);
+                new String[]{'%' + name + '%'}).get(0);
         Log.d("current contact: ", c.name);
         return c;
     }

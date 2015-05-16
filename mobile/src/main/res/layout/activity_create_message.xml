@@ -17,6 +17,8 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <github.chenupt.dragtoplayout.DragTopLayout
+        app:dtlOverDrag="false"
+        app:dtlOpen="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -125,7 +127,9 @@
                 <edu.guet.jjhome.guetw5.view.ContactsCompletionView
                     android:id="@+id/searchView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                    <requestFocus/>
+                </edu.guet.jjhome.guetw5.view.ContactsCompletionView>
             </LinearLayout>
 
             <EditText
@@ -133,8 +137,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/editTitle"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/textView"
-                android:layout_toEndOf="@+id/textView"
+                android:layout_toRightOf="@+id/txtAppTitle"
+                android:layout_toEndOf="@+id/txtAppTitle"
                 android:hint="@string/hint_message_title" />
             <EditText
                 android:layout_width="match_parent"

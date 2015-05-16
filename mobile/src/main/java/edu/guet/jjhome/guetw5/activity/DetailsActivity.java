@@ -14,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +38,9 @@ public class DetailsActivity extends ActionBarActivity {
 
     private Handler handler;
     private String message_id;
+    private FloatingActionMenu menu_float;
+    private FloatingActionButton fab_reply;
+    private FloatingActionButton fab_browser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +56,9 @@ public class DetailsActivity extends ActionBarActivity {
             }
         });
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         processViews();
 
@@ -102,6 +108,15 @@ public class DetailsActivity extends ActionBarActivity {
         text_receiver= (TextView) findViewById(R.id.text_receiver);
         text_emergency = (TextView) findViewById(R.id.text_Emergency);
         text_importance = (TextView) findViewById(R.id.text_importance);
+
+        fab_reply = (FloatingActionButton) findViewById(R.id.fab_reply);
+        fab_reply.setOnClickListener(clickListener);
+        fab_browser = (FloatingActionButton) findViewById(R.id.fab_browser);
+        fab_browser.setOnClickListener(clickListener);
+
+        menu_float = (FloatingActionMenu) findViewById(R.id.menu_float);
+//        menu_float.addMenuButton(fab_reply);
+//        menu_float.addMenuButton(fab_browser);
     }
 
 
@@ -135,7 +150,7 @@ public class DetailsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_message, menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
 //        return true;
     }
@@ -148,9 +163,7 @@ public class DetailsActivity extends ActionBarActivity {
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.action_open_browser:
-                Intent i = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(item.source));
-                startActivity(i);
+                openInBrowser();
                 break;
             default:
                 onBackPressed();
@@ -158,4 +171,27 @@ public class DetailsActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(menuItem);
     }
+
+    private void openInBrowser() {
+        Intent i = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(item.source));
+        Log.d("open in browser:", item.source);
+        startActivity(i);
+    }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.fab_reply:
+                    Intent intent = new Intent(getBaseContext(), CreateMessageActivity.class);
+                    intent.putExtra("receiver", item.sender);
+                    startActivity(intent);
+                    break;
+                case R.id.fab_browser:
+                    openInBrowser();
+                    break;
+            }
+        }
+    };
 }

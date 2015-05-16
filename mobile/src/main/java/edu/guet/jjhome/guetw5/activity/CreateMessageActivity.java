@@ -61,6 +61,8 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
     private CheckBox cb5;
     private Validator validator;
     private String created_message_id;
+    private String receiver;
+    private Contact contact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,15 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         validator.setValidationListener(this);
 
         processView();
+
+        if (savedInstanceState == null) {
+            receiver = getIntent().getStringExtra("receiver");
+            if (receiver != null) {
+                contact = Contact.findContactByName(receiver);
+                completionView.addObject(contact);
+                editSubject.requestFocus();
+            }
+        }
     }
 
     private void processView() {
@@ -108,21 +119,12 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         spinner_trace.setAdapter(adapter4);
 
         Contact[] contact = Contact.getAllContact();
-//        contact = new Contact[] {
-//                new Contact("aaaaa", "1111111"),
-//                new Contact("abaaa", "1111111"),
-//                new Contact("acaaa", "1111111"),
-//                new Contact("ddd-aaa", "1111111"),
-//                new Contact("bbbbb", "1111111"),
-//                new Contact("ccccc", "1111111"),
-//                new Contact("ddddd", "1111111")
-//        };
 
         FilteredArrayAdapter<Contact> adapter = new FilteredArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact) {
             @Override
             protected boolean keepObject(Contact obj, String mask) {
                 mask = mask.toLowerCase();
-                return obj.getName().toLowerCase().contains(mask);
+                return obj.getName().contains(mask);
             }
         };
 

@@ -49,6 +49,9 @@ public class MainActivity extends ActionBarActivity
     private ViewPager viewPager;
     private SmartTabLayout viewPagerTab;
 
+    static int drawerPosition;
+    private Drawer.Result drawerResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +121,7 @@ public class MainActivity extends ActionBarActivity
                 .build();
 
 
-        Drawer.Result result = new Drawer()
+        drawerResult = new Drawer()
                 .withActivity(this)
                 .withToolbar(mToolbar)
                 .withAccountHeader(headerResult)
@@ -137,22 +140,28 @@ public class MainActivity extends ActionBarActivity
                         // do something with the clicked item :D
                         switch (position) {
                             case 0:
+                                backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_UNREAD);
                                 break;
                             case 1:
+                                backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_READ);
                                 break;
                             case 2:
+                                backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_PUBLIC, "");
                                 break;
                             case 3:
+                                backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_SENT, "");
                                 break;
                             case 5:
+                                restorePosition();
                                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                                 break;
                             case 6:
-                                showDirections();
+                                restorePosition();
+                                showAboutDialog();
 //                                startActivity(new Intent(getBaseContext(), AboutActivity.class));
                                 break;
                         }
@@ -167,10 +176,18 @@ public class MainActivity extends ActionBarActivity
                 })
                 .build();
 
-        result.setSelection(0, true);
+        drawerResult.setSelection(0, true);
     }
 
-    public void showDirections() {
+    private void restorePosition() {
+        drawerResult.setSelection(drawerPosition, false);
+    }
+
+    private void backupPosition(int position) {
+        drawerPosition = position;
+    }
+
+    public void showAboutDialog() {
         String content = getString(R.string.about_tips) + "\n"
                 + getString(R.string.about_tips_content) + "\n"
                 + getString(R.string.about_disclaimer) + "\n"

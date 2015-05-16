@@ -3,9 +3,9 @@
     package="edu.guet.jjhome.guetw5" >
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+    <!--<uses-permission android:name="android.permission.READ_PROFILE" />-->
+    <!--<uses-permission android:name="android.permission.READ_CONTACTS" />-->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -44,7 +44,6 @@
             android:parentActivityName=".activity.MainActivity" >
             <intent-filter>
                 <action android:name=".Details" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <!-- Parent activity meta-data to support 4.0 and lower -->
