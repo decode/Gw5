@@ -161,8 +161,8 @@ public class MainActivity extends ActionBarActivity
                                 break;
                             case 6:
                                 restorePosition();
-                                showAboutDialog();
-//                                startActivity(new Intent(getBaseContext(), AboutActivity.class));
+//                                showAboutDialog();
+                                startActivity(new Intent(getBaseContext(), AboutActivity.class));
                                 break;
                         }
 
@@ -187,18 +187,18 @@ public class MainActivity extends ActionBarActivity
         drawerPosition = position;
     }
 
-    public void showAboutDialog() {
-        String content = getString(R.string.about_tips) + "\n"
-                + getString(R.string.about_tips_content) + "\n"
-                + getString(R.string.about_disclaimer) + "\n"
-                + getString(R.string.about_disclaimer_content) + "\n"
-                + getString(R.string.about_author_info);
-        new MaterialDialog.Builder(this)
-                .title(R.string.about_title)
-                .content(content)
-                .positiveText(R.string.action_back)
-                .show();
-    }
+//    public void showAboutDialog() {
+//        String content = getString(R.string.about_tips) + "\n"
+//                + getString(R.string.about_tips_content) + "\n"
+//                + getString(R.string.about_disclaimer) + "\n"
+//                + getString(R.string.about_disclaimer_content) + "\n"
+//                + getString(R.string.about_author_info);
+//        new MaterialDialog.Builder(this)
+//                .title(R.string.about_title)
+//                .content(content)
+//                .positiveText(R.string.action_back)
+//                .show();
+//    }
 
     private ProfileDrawerItem initAccount() {
         User u = new Select().from(User.class).where("current=?", true).orderBy("ID ASC").executeSingle();

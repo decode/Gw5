@@ -8,6 +8,7 @@ public class AppConstants {
 
     public static final String DATE_FORMAT_SOURCE = "yyyy/M/d H:mm";
     public static final String DATE_FORMAT_DEST = "yyyy/MM/dd HH:mm";
+    public static final String DATE_FORMAT_DEST_SIMPLE = "MM月dd日";
     public static final int NOTICE_PUBLIC = 1;
     public static final int NOTICE_ALL = 2;
 

@@ -46,13 +46,14 @@ dependencies {
     compile "com.splitwise:tokenautocomplete:1.3.3@aar"
     // Floating action button
     compile 'com.github.clans:fab:1.5.0'
-    //
+    // Not used yet
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
-
+    // Drag down to show layout
     compile 'com.github.chenupt.android:dragtoplayout:1.2.1@aar'
-
     // Validator
     compile 'com.mobsandgeeks:android-saripaar:2.0-SNAPSHOT'
+    // Date util
+    compile 'net.danlew:android.joda:2.7.2'
 
     // Undo
     compile 'com.nispok:snackbar:2.10.+'

@@ -94,23 +94,7 @@
 
     <string name="title_activity_about">关于本软件</string>
     <string name="about_title">关于本软件</string>
-    <string name="about_tips">使用技巧</string>
-    <string name="about_tips_content">
-        1. 设置选项可以设置自动登录，如果取消该项设置，每次关掉应用之后会要求重新输入用户名和密码。\n
-        2. 创建消息的时候，如果对消息选项不进行设置，则使用默认选项发送消息，
-        默认选项为：紧急度（普通），重要度（一般），限制选项（仅限名单中的部门或人员查看），跟踪选项（仅跟踪预设名单）
-        工作方向（教务），发送短信提示（是），这样可以节省发消息时间。\n
-        3. 消息设置页面可以在发消息界面下滑打开，上划收起。\n
-        4. 发送消息后，会有5秒钟的撤销消息提示，可以把之前发的消息撤销，提示到时间后，自动返回消息列表页面。\n
-    </string>
-    <string name="about_disclaimer">免责声明</string>
-    <string name="about_disclaimer_content">
-        本软件利用黑盒测试实现网站的基本功能，为方便在移动端使用而开发。\n
-        所有信息资源和发送消息功能均来自:\n
-        http://guetw5.myclub2.com/Home/Index 通知与任务管理系统\n
-        由于发送消息功能没有进行充分测试，因此只能保证发送给自己的功能良好，请谨慎使用。\n
-        如有任何问题和建议请联系我。</string>
-    <string name="about_author_info">jjhome at guet.edu.cn</string>
+
     <string name="action_reply">回复</string>
 
 </resources>
