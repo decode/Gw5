@@ -131,7 +131,7 @@ public class MainActivity extends ActionBarActivity
                         new PrimaryDrawerItem().withName(R.string.nav_item_public),
                         new PrimaryDrawerItem().withName(R.string.nav_item_sent),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.nav_item_setting),
+                        new SecondaryDrawerItem().withName(R.string.nav_item_setting),
                         new SecondaryDrawerItem().withName(R.string.nav_item_help)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -142,18 +142,22 @@ public class MainActivity extends ActionBarActivity
                             case 0:
                                 backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_UNREAD);
+                                getSupportActionBar().setTitle(R.string.nav_item_unread);
                                 break;
                             case 1:
                                 backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_ALL, AppConstants.MSG_STATUS_READ);
+                                getSupportActionBar().setTitle(R.string.nav_item_read);
                                 break;
                             case 2:
                                 backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_PUBLIC, "");
+                                getSupportActionBar().setTitle(R.string.nav_item_public);
                                 break;
                             case 3:
                                 backupPosition(position);
                                 fragment = OverviewFragment.newInstance(AppConstants.MSG_SENT, "");
+                                getSupportActionBar().setTitle(R.string.nav_item_sent);
                                 break;
                             case 5:
                                 restorePosition();

@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -30,6 +34,7 @@ public class DetailsActivity extends ActionBarActivity {
     private Item item;
 
     private TextView text_status;
+    private TextView text_time;
     private TextView text_title;
     private TextView text_content;
     private TextView text_receiver;
@@ -41,13 +46,15 @@ public class DetailsActivity extends ActionBarActivity {
     private FloatingActionMenu menu_float;
     private FloatingActionButton fab_reply;
     private FloatingActionButton fab_browser;
+    private WebView web_content;
+
+    private String mime_type = "text/html; charset=utf-8";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Toolbar toolbar = (Toolbar) findViewById(R.id.details_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,28 +63,13 @@ public class DetailsActivity extends ActionBarActivity {
             }
         });
 
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         processViews();
 
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
-            // If the screen is now in landscape mode, we can show the
-            // dialog in-line with the list so we don't need this activity.
-            finish();
-            return;
-        }
-
         if (savedInstanceState == null) {
-
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction ft = fragmentManager.beginTransaction();            // During initial setup, plug in the details fragment.
-//            DetailsFragment details = new DetailsFragment();
-//            details.setArguments(getIntent().getExtras());
-//
-//            getSupportFragmentManager().beginTransaction().add(R.layout.item_detail, details).commit();
             item = (Item) getIntent().getSerializableExtra("item");
             text_title.setText(item.title);
             text_receiver.setText(getString(R.string.hint_message_to) + item.getReceiver());
@@ -86,8 +78,10 @@ public class DetailsActivity extends ActionBarActivity {
 
             DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
             Date d = new Date(item.getSent_at());
+            text_time.setText(df.format(d));
 
-            toolbar.setTitle(item.sender + " - " + df.format(d));
+            toolbar.setTitle(item.sender);
+            getSupportActionBar().setTitle(item.sender);
 
             if (item.content.length() < 1) {
                 handler = new Handler(new MsgHandler());
@@ -96,13 +90,15 @@ public class DetailsActivity extends ActionBarActivity {
                 web.readMessage(message_id);
             }
             else {
-                text_content.setText(item.content);
+                web_content.loadData(item.content, mime_type, null);
+                text_content.setText(Html.fromHtml(item.content).toString());
             }
         }
     }
 
     private void processViews() {
         text_status = (TextView) findViewById(R.id.text_status);
+        text_time = (TextView) findViewById(R.id.text_time);
         text_title = (TextView) findViewById(R.id.text_title);
         text_content = (TextView) findViewById(R.id.text_content);
         text_receiver= (TextView) findViewById(R.id.text_receiver);
@@ -115,8 +111,10 @@ public class DetailsActivity extends ActionBarActivity {
         fab_browser.setOnClickListener(clickListener);
 
         menu_float = (FloatingActionMenu) findViewById(R.id.menu_float);
-//        menu_float.addMenuButton(fab_reply);
-//        menu_float.addMenuButton(fab_browser);
+        
+        web_content = (WebView) findViewById(R.id.web_content);
+        WebSettings webSettings = web_content.getSettings();
+        webSettings.setDefaultTextEncodingName("utf-8");
     }
 
 
@@ -135,7 +133,8 @@ public class DetailsActivity extends ActionBarActivity {
                 case AppConstants.STAGE_GET_SUCCESS:
                     text_status.setVisibility(View.INVISIBLE);
                     item = Item.fetchItem(message_id);
-                    text_content.setText(item.content);
+                    text_content.setText(Html.fromHtml(item.content).toString());
+                    web_content.loadData(item.content, mime_type, null);
                     break;
                 case AppConstants.STAGE_NOT_LOGIN:
                     text_status.setText(getString(R.string.stage_not_login));
@@ -152,7 +151,6 @@ public class DetailsActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
-//        return true;
     }
 
     @Override
@@ -162,14 +160,27 @@ public class DetailsActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = menuItem.getItemId();
         switch (id) {
-            case R.id.action_open_browser:
-                openInBrowser();
+            case R.id.action_view_style:
+                toggleShow();
                 break;
             default:
                 onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void toggleShow() {
+        if (findViewById(R.id.web_content).getVisibility() == View.GONE) {
+            web_content.setVisibility(View.VISIBLE);
+            text_content.setVisibility(View.GONE);
+            ((ActionMenuItemView) findViewById(R.id.action_view_style)).setTitle(getString(R.string.action_show_web));
+        }
+        else {
+            web_content.setVisibility(View.GONE);
+            text_content.setVisibility(View.VISIBLE);
+            ((ActionMenuItemView) findViewById(R.id.action_view_style)).setTitle(getString(R.string.action_show_text));
+        }
     }
 
     private void openInBrowser() {

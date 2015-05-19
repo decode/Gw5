@@ -28,16 +28,16 @@ public class WebService {
 
     private final PersistentCookieStore myCookieStore;
     public static final String base_url = "http://guetw5.myclub2.com";
-    String login_url = "http://guetw5.myclub2.com/Account/LogOn";
-    String logout_url = "http://guetw5.myclub2.com/Account/LogOff";
-    String common_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Common";
-    String person_url = "http://guetw5.myclub2.com/NoticeTask/Notice/AboutMe";
-    String message_prefix_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Details/";
-    String message_create_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Create";
-    String message_send_url = "http://guetw5.myclub2.com/NoticeTask/Notice/SendNotice";
-    String message_created_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Created";
-    String message_undo_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Undo";
-    String message_created_and_undo_url = "http://guetw5.myclub2.com/NoticeTask/Notice/Created?andundo=true&andundoCheck=on";
+    String login_url = base_url + "/Account/LogOn";
+    String logout_url = base_url + "/Account/LogOff";
+    String common_url = base_url + "/NoticeTask/Notice/Common";
+    String person_url = base_url + "/NoticeTask/Notice/AboutMe";
+    String message_prefix_url = base_url + "/NoticeTask/Notice/Details/";
+    String message_create_url = base_url + "/NoticeTask/Notice/Create";
+    String message_send_url = base_url + "/NoticeTask/Notice/SendNotice";
+    String message_created_url = base_url + "/NoticeTask/Notice/Created";
+    String message_undo_url = base_url + "/NoticeTask/Notice/Undo";
+    String message_created_and_undo_url = base_url + "/NoticeTask/Notice/Created?andundo=true&andundoCheck=on";
 
     private AsyncHttpClient client;
 

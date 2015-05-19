@@ -1,5 +1,9 @@
 package edu.guet.jjhome.guetw5.util;
 
+import org.joda.time.DateTimeZone;
+
+import java.util.TimeZone;
+
 public class AppConstants {
     public static final String MY_ACCOUNT_TYPE = "edu.guet.accounts";
 
@@ -8,7 +12,10 @@ public class AppConstants {
 
     public static final String DATE_FORMAT_SOURCE = "yyyy/M/d H:mm";
     public static final String DATE_FORMAT_DEST = "yyyy/MM/dd HH:mm";
-    public static final String DATE_FORMAT_DEST_SIMPLE = "MM月dd日";
+    public static final String DATE_FORMAT_DEST_SIMPLE = "M月d日";
+    public static final int DAY_BEFORE = 4;
+    public static final DateTimeZone TIME_ZONE = DateTimeZone.forTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+
     public static final int NOTICE_PUBLIC = 1;
     public static final int NOTICE_ALL = 2;
 
@@ -41,4 +48,5 @@ public class AppConstants {
     public static final String MSG_STATUS_UNREAD = "未读";
 
     public static final long SNACKBAR_DURATION = 5000;
+
 }

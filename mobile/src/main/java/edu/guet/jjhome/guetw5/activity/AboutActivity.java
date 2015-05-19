@@ -1,12 +1,17 @@
 package edu.guet.jjhome.guetw5.activity;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -19,7 +24,7 @@ import edu.guet.jjhome.guetw5.R;
 
 public class AboutActivity extends ActionBarActivity {
 
-    private TextView txtContent;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,30 +42,10 @@ public class AboutActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        txtContent = (TextView) findViewById(R.id.txt_about_content);
-        try {
-            AssetManager am = getApplicationContext().getAssets();
-            InputStream inputStream = am.open("about.html");
-            String html = "";
-            if (inputStream != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                html = stringBuilder.toString();
-            }
-            txtContent.setText(Html.fromHtml(html));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        webView = (WebView) findViewById(R.id.webView2);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setDefaultTextEncodingName("utf-8");
+        webView.loadUrl("file:///android_asset/about.html");
     }
 
     @Override
@@ -79,6 +64,11 @@ public class AboutActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_email:
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, "jjhome@guet.edu.cn");
+                startActivity(Intent.createChooser(emailIntent, getString(R.string.action_send_mail)));
                 break;
             default:
                 onBackPressed();

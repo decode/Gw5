@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_open_browser"
-        android:title="@string/action_open_browser"
+    <item android:id="@+id/action_view_style"
+        android:title="@string/action_show_text"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_browser"
         app:showAsAction="ifRoom" />
 </menu>

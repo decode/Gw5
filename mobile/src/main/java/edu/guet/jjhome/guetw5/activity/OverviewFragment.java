@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class OverviewFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Item item = itemAdapter.getItem(position);
                 if (selectedCount > 0) {
-
+                    //TODO: multi-selection
                 } else {
                     Intent intent = new Intent(".Details");
                     intent.putExtra("item", item);
@@ -172,9 +173,6 @@ public class OverviewFragment extends Fragment {
                     txt_status.setVisibility(View.VISIBLE);
                     break;
                 case AppConstants.STAGE_GET_SUCCESS:
-//                    ((MaterialNavigationDrawer)getActivity()).getCurrentSection().setNotifications(new_count);
-
-//                    itemAdapter.addAll(Item.getItemsByType(msg_type));
                     List<Item> items = Item.getItemsByTypeAndStatus(msg_type, read_status);
                     Log.d("after success, test msg_type", msg_type);
 
@@ -233,13 +231,7 @@ public class OverviewFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_overview_settings) {
-//            startActivity(new Intent(getActivity().getBaseContext(), SettingsActivity.class));
-//        }
-
         if (id == R.id.action_overview_refresh) {
-//            Toast.makeText(getActivity().getBaseContext(), getString(R.string.action_refresh_status), Toast.LENGTH_SHORT).show();
             web = new WebService(getActivity().getBaseContext(), handler);
             web.fetchContent(msg_type);
         }
@@ -251,21 +243,17 @@ public class OverviewFragment extends Fragment {
         if (id == R.id.action_logout) {
             User u = User.currentUser();
             if (u != null) {
-                u.delete();
+//                u.delete();
+                new Delete().from(User.class).execute();
+                new Delete().from(Item.class).execute();
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(AppConstants.PREF_AUTOLOGIN, false);
                 editor.commit();
 
-//                MyNavigationDrawer my_drawer = (MyNavigationDrawer) this.getActivity();
-//                my_drawer.accountChange();
                 web = new WebService(getActivity().getBaseContext(), handler);
                 web.logout();
-
-//                Intent intent = new Intent(getActivity(), LoginActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
             }
         }
 
@@ -280,7 +268,6 @@ public class OverviewFragment extends Fragment {
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             switch (v.getId()) {
                 case R.id.fab:
                     startActivity(new Intent(getActivity().getBaseContext(), CreateMessageActivity.class));

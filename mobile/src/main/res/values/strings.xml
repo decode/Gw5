@@ -31,6 +31,7 @@
     <string name="action_settings">设置</string>
     <string name="action_send">发送</string>
     <string name="action_open_browser">浏览器打开</string>
+    <string name="action_send_mail">发送邮件反馈</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
@@ -96,5 +97,7 @@
     <string name="about_title">关于本软件</string>
 
     <string name="action_reply">回复</string>
+    <string name="action_show_web">网页</string>
+    <string name="action_show_text">文本</string>
 
 </resources>

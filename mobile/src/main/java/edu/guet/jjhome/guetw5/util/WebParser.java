@@ -2,6 +2,9 @@ package edu.guet.jjhome.guetw5.util;
 
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +40,7 @@ public class WebParser {
         Elements columns;
         ArrayList<Item> items = new ArrayList<>();
         Item item;
-        DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
+//        DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
         for (Element notice : notices) {
             columns = notice.select("td");
             if (columns.size() == 6) {
@@ -49,7 +52,6 @@ public class WebParser {
                 // Read status
                 Element read_status = columns.get(0).select("span").first();
                 item.read_status = read_status.text().trim();
-
 
                 // Receiver
                 item.setReceiver(columns.get(1).text().trim());
@@ -64,12 +66,9 @@ public class WebParser {
                 item.setSender(columns.get(4).text().trim());
 
                 // Publish time
-                try {
-                    Date date = source_format.parse(columns.get(5).text().trim());
-                    item.setSent_at(date.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                //                    Date date = source_format.parse(columns.get(5).text().trim());
+//                    item.setSent_at(date.getTime());
+                item.sent_at = convertDate(columns.get(5).text().trim());
 
                 item.save();
                 items.add(item);
@@ -83,7 +82,7 @@ public class WebParser {
         Elements columns;
         ArrayList<Item> items = new ArrayList<>();
         Item item;
-        DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
+//        DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
         for (Element notice : notices) {
             columns = notice.select("td");
             if (columns.size() == 5) {
@@ -102,18 +101,21 @@ public class WebParser {
                 item.setSender(columns.get(3).text().trim());
 
                 // Publish time
-                try {
-                    Date date = source_format.parse(columns.get(4).text().trim());
-                    item.setSent_at(date.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                //                    Date date = source_format.parse(columns.get(4).text().trim());
+//                    item.setSent_at(date.getTime());
+                item.sent_at = convertDate(columns.get(4).text().trim());
 
                 item.save();
                 items.add(item);
             }
         }
         return items;
+    }
+
+    private long convertDate(String d) {
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(AppConstants.DATE_FORMAT_SOURCE);
+        DateTime dt = fmt.withZone(AppConstants.TIME_ZONE).parseDateTime(d);
+        return dt.getMillis();
     }
 
     private Item prepareItem(Elements columns) {
@@ -143,7 +145,10 @@ public class WebParser {
     public Item parseMessageDetail(String message_id) {
         Item item = Item.fetchItem(message_id);
         Element content = doc.select("div.notice-body").first();
-        item.content = content.text();
+//        item.content = content.text();
+        String page = content.html().replace("/NoticeTask/", WebService.base_url + "/NoticeTask/");
+        Log.d("html page: ", content.html());
+        item.content = page;
 
         Elements info = doc.select("span.label.label-success");
         ArrayList<String> directions = new ArrayList<>();
@@ -216,8 +221,7 @@ public class WebParser {
     public String parseCreatedMessageId() {
         Element element = doc.select("tbody > tr > td > a").first();
         String source = element.attr("href");
-        String message_id = messageId(source);
-        return message_id;
+        return messageId(source);
     }
 
     public void parseSendMessage() {

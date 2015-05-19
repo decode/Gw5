@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
@@ -19,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.model.Item;
@@ -60,11 +62,13 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 //            DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
 //            Date d = new Date(p.getSent_at());
 
-            DateTime dt = new DateTime(p.sent_at);
-            DateTime ct = new DateTime();
+//            DateTime dt = new DateTime(p.sent_at, tz);
+//            DateTime ct = DateTime.now(tz);
+            DateTime dt = new DateTime(p.sent_at, AppConstants.TIME_ZONE);
+            DateTime ct = DateTime.now(AppConstants.TIME_ZONE);
             Duration duration = new Interval(dt, ct).toDuration();
             String date_text;
-            if (duration.getStandardDays() < 7) {
+            if (duration.getStandardDays() < AppConstants.DAY_BEFORE) {
                 date_text = dt.dayOfWeek().getAsShortText(Locale.CHINESE);
             }
             else {
