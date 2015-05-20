@@ -1,7 +1,6 @@
 package edu.guet.jjhome.guetw5.activity;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,9 +20,7 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.joda.time.DateTime;
 
 import edu.guet.jjhome.guetw5.R;
 import edu.guet.jjhome.guetw5.model.Item;
@@ -76,9 +73,8 @@ public class DetailsActivity extends ActionBarActivity {
             text_emergency.setText(item.getEmergency());
             text_importance.setText(item.getImportance());
 
-            DateFormat df = new SimpleDateFormat(AppConstants.DATE_FORMAT_DEST);
-            Date d = new Date(item.getSent_at());
-            text_time.setText(df.format(d));
+            DateTime dt = new DateTime(item.sent_at, AppConstants.TIME_ZONE);
+            text_time.setText(dt.toString(AppConstants.DATE_FORMAT_SOURCE));
 
             toolbar.setTitle(item.sender);
             getSupportActionBar().setTitle(item.sender);
