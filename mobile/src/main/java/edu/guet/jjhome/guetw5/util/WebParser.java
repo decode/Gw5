@@ -33,7 +33,7 @@ public class WebParser {
     /**
      * Get item information from page
      * TODO: If item existed, pass the process.
-     * @return
+     * @return Parsed Messages
      */
     public ArrayList<Item> parseItemList() {
         Elements notices = doc.select("tbody > tr");
@@ -247,14 +247,15 @@ public class WebParser {
 
             // sent time
             td = tds.get(2);
-            DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
-            Date date = null;
-            try {
-                date = source_format.parse(td.text().trim());
-                item.setSent_at(date.getTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+//            DateFormat source_format = new SimpleDateFormat(AppConstants.DATE_FORMAT_SOURCE);
+//            Date date = null;
+//            try {
+//                date = source_format.parse(td.text().trim());
+//                item.setSent_at(date.getTime());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+            item.sent_at = convertDate(td.text().trim());
 
             // status
             // TODO: save message status

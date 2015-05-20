@@ -35,10 +35,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ProfileActivity"
-            android:label="@string/activity_profile" >
-        </activity>
-        <activity
             android:name=".activity.DetailsActivity"
             android:label="@string/activity_details"
             android:parentActivityName=".activity.MainActivity" >
@@ -52,15 +48,8 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.MyNavigationDrawer"
-            android:theme="@style/MyNavigationDrawerTheme" />
-        <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" >
-        </activity>
-        <activity
-            android:name=".activity.MessageActivity"
-            android:label="@string/title_activity_message" >
         </activity>
         <activity
             android:name=".activity.CreateMessageActivity"

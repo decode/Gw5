@@ -33,11 +33,7 @@ import edu.guet.jjhome.guetw5.model.User;
 import edu.guet.jjhome.guetw5.util.AppConstants;
 import edu.guet.jjhome.guetw5.util.WebService;
 
-public class OverviewFragment extends Fragment {
-    private static final String ARG_TYPE = "type";
-
-    private int param_type;
-
+public class MessageFragment extends Fragment {
     private ItemAdapter itemAdapter;
 
     private int selectedCount = 0;
@@ -51,17 +47,8 @@ public class OverviewFragment extends Fragment {
     private String read_status;
     private FloatingActionButton fab;
 
-    // TODO: Rename and change types and number of parameters
-    public static OverviewFragment newInstance(int view_type) {
-        OverviewFragment fragment = new OverviewFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_TYPE, view_type);
-        fragment.setArguments(args);
-        Log.d("new Instance view_type", " ");
-        return fragment;
-    }
-    public static OverviewFragment newInstance(String msg_type, String read_status) {
-        OverviewFragment fragment = new OverviewFragment();
+    public static MessageFragment newInstance(String msg_type, String read_status) {
+        MessageFragment fragment = new MessageFragment();
 
         Bundle args = new Bundle();
         args.putString("msg_type", msg_type);
@@ -73,7 +60,7 @@ public class OverviewFragment extends Fragment {
         return fragment;
     }
 
-    public OverviewFragment() {
+    public MessageFragment() {
         // Required empty public constructor
     }
 
@@ -107,7 +94,7 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_message, container, false);
 
         lv_items = (ListView) rootView.findViewById(R.id.listView);
         txt_status = (TextView) rootView.findViewById(R.id.text_status);
@@ -141,22 +128,12 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        ((MainActivity) activity).onSectionAttached(
-//                getArguments().getInt(ARG_SECTION_NUMBER));
-//        try {
-//            mListener = (OnItemSelectedListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
     }
-
 
     private class MsgHandler implements Handler.Callback {
         @Override

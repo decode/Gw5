@@ -74,16 +74,10 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        processView();
+        handler = new Handler(new MsgHandler());
+        web = new WebService(getBaseContext(), handler);
 
-        if (savedInstanceState == null) {
-            receiver = getIntent().getStringExtra("receiver");
-            if (receiver != null) {
-                contact = Contact.findContactByName(receiver);
-                completionView.addObject(contact);
-                editSubject.requestFocus();
-            }
-        }
+        processView();
     }
 
     private void processView() {
@@ -94,11 +88,11 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (User.currentUser().position_id == null || Contact.getAllContact().length == 0) {
-            handler = new Handler(new MsgHandler());
-            web = new WebService(getBaseContext(), handler);
-            web.makeCreatePage();
-        }
+//        if (User.currentUser().position_id == null || Contact.getAllContact().length == 0) {
+//            handler = new Handler(new MsgHandler());
+//            web = new WebService(getBaseContext(), handler);
+//            web.makeCreatePage();
+//        }
 
         spinner_urgency = (BetterSpinner) findViewById(R.id.spinnerUrgency);
         spinner_important = (BetterSpinner) findViewById(R.id.spinnerImportant);
@@ -118,9 +112,9 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         spinner_limit.setAdapter(adapter3);
         spinner_trace.setAdapter(adapter4);
 
-        Contact[] contact = Contact.getAllContact();
+        Contact[] contacts = Contact.getAllContact();
 
-        FilteredArrayAdapter<Contact> adapter = new FilteredArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contact) {
+        FilteredArrayAdapter<Contact> adapter = new FilteredArrayAdapter<Contact>(this, android.R.layout.simple_list_item_1, contacts) {
             @Override
             protected boolean keepObject(Contact obj, String mask) {
                 mask = mask.toLowerCase();
@@ -144,6 +138,13 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         cb3 = (CheckBox) findViewById(R.id.checkBox3);
         cb4 = (CheckBox) findViewById(R.id.checkBox4);
         cb5 = (CheckBox) findViewById(R.id.checkBox5);
+
+        receiver = getIntent().getStringExtra("receiver");
+        if (receiver != null) {
+            contact = Contact.findContactByName(receiver);
+            completionView.addObject(contact);
+            editSubject.requestFocus();
+        }
     }
 
     @Override
@@ -276,8 +277,8 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 
         Log.d("message params:", params.toString());
 
-//        web.postCreateMessage(params);
-        showSnackbar();
+        web.postCreateMessage(params);
+//        showSnackbar();
     }
 
     public void showDirections(View view) {

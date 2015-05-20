@@ -11,8 +11,6 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
-import edu.guet.jjhome.guetw5.util.AppConstants;
-
 @Table(name = "Items")
 public class Item extends Model implements Serializable {
 
@@ -168,7 +166,7 @@ public class Item extends Model implements Serializable {
     public static List<Item> getItemsByType(String msg_type) {
         return new Select().from(Item.class)
                 .where("msg_type = ?", msg_type)
-                .orderBy("read_status DESC")
+                .orderBy("sent_at DESC")
                 .execute();
     }
 
