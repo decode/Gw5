@@ -1,10 +1,13 @@
 package edu.guet.jjhome.guetw5.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +43,7 @@ import edu.guet.jjhome.guetw5.view.ContactsCompletionView;
 
 public class CreateMessageActivity extends ActionBarActivity implements Validator.ValidationListener {
 
+    private static SharedPreferences sharedPref;
     private WebService web;
     private Handler handler;
     private BetterSpinner spinner_urgency;
@@ -76,6 +80,9 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 
         handler = new Handler(new MsgHandler());
         web = new WebService(getBaseContext(), handler);
+
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         processView();
     }
@@ -239,6 +246,7 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 
         RequestParams params = new RequestParams();
         // 标题
+        subject = subject + appendSenderName();
         params.put("Subject", subject);
         // 正文
         params.put("Body", body);
@@ -279,6 +287,16 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 
         web.postCreateMessage(params);
 //        showSnackbar();
+    }
+
+    public static String appendSenderName() {
+        String tail = "";
+        if (sharedPref.getBoolean(AppConstants.PREF_TAIL, false)) {
+            tail = sharedPref.getString(AppConstants.PREF_MESSAGE_TAIL, "");
+            if (TextUtils.isEmpty(tail))
+                tail = AppConstants.MES_TAIL_TEMPLATE.replace("SENDER", User.currentUser().username);
+        }
+        return tail;
     }
 
     public void showDirections(View view) {

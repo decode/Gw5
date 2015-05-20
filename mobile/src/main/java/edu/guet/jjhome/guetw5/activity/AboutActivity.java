@@ -1,24 +1,14 @@
 package edu.guet.jjhome.guetw5.activity;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import edu.guet.jjhome.guetw5.R;
 
@@ -36,7 +26,7 @@ public class AboutActivity extends ActionBarActivity {
 
     private void processView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
-        toolbar.setTitle(R.string.title_activity_about);
+        toolbar.setTitle(R.string.title_activity_help);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

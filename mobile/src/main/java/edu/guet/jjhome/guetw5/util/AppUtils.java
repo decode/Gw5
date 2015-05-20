@@ -2,6 +2,8 @@ package edu.guet.jjhome.guetw5.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -11,6 +13,9 @@ import com.loopj.android.http.PersistentCookieStore;
 import org.apache.http.cookie.Cookie;
 
 import java.util.List;
+import java.util.prefs.Preferences;
+
+import edu.guet.jjhome.guetw5.model.User;
 
 public class AppUtils {
     /**

@@ -43,10 +43,14 @@ public class AppConstants {
     public static final String MSG_LIST = "MESSAGES";
 
     public static final String PREF_AUTOLOGIN = "pref_auto_login";
+    public static final String PREF_TAIL = "pref_tail";
+    public static final String PREF_MESSAGE_TAIL = "pref_message_tail";
 
     public static final String MSG_STATUS_READ = "已读";
     public static final String MSG_STATUS_UNREAD = "未读";
 
-    public static final long SNACKBAR_DURATION = 5000;
+    public static final String MES_TAIL_TEMPLATE = " [SENDER]";
+
+    public static final long SNACKBAR_DURATION = 6000;
 
 }

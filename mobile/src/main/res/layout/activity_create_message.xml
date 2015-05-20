@@ -126,6 +126,7 @@
 
                 <edu.guet.jjhome.guetw5.view.ContactsCompletionView
                     android:id="@+id/searchView"
+                    android:imeOptions="actionUnspecified"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <requestFocus/>
@@ -136,6 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editTitle"
+                android:imeOptions="actionUnspecified"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/txtAppTitle"
                 android:layout_toEndOf="@+id/txtAppTitle"
@@ -146,6 +148,7 @@
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editContent"
+                android:imeOptions="actionUnspecified"
                 android:hint="@string/hint_message_content"
                 android:lines="5"
             android:gravity="top" />

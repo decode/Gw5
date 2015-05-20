@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.activeandroid.query.Select;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -92,7 +93,8 @@ public class MainActivity extends ActionBarActivity {
                         new PrimaryDrawerItem().withName(R.string.nav_item_sent),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.nav_item_setting),
-                        new SecondaryDrawerItem().withName(R.string.nav_item_help)
+                        new SecondaryDrawerItem().withName(R.string.nav_item_help),
+                        new SecondaryDrawerItem().withName(R.string.nav_item_about)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -125,8 +127,11 @@ public class MainActivity extends ActionBarActivity {
                                 break;
                             case 6:
                                 restorePosition();
-//                                showAboutDialog();
                                 startActivity(new Intent(getBaseContext(), AboutActivity.class));
+                                break;
+                            case 7:
+                                restorePosition();
+                                showAbout();
                                 break;
                         }
 
@@ -161,6 +166,14 @@ public class MainActivity extends ActionBarActivity {
 
     private void restorePosition() {
         drawerResult.setSelection(drawerPosition, false);
+    }
+
+    public void showAbout() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.dialog_about)
+                .content(R.string.dialog_about_content)
+                .positiveText(R.string.action_back)
+                .show();
     }
 
     @Override
