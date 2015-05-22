@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -110,6 +111,7 @@ public class LoginActivity extends Activity {
     }
 
     private boolean isAutoLogin() {
+        Log.d("--------------------------test if auto login:", String.valueOf(sharedPref.getBoolean(AppConstants.PREF_AUTOLOGIN, false)));
         return sharedPref.getBoolean(AppConstants.PREF_AUTOLOGIN, false);
     }
 
@@ -247,6 +249,10 @@ public class LoginActivity extends Activity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     LoginActivity.this.startActivity(intent);
+                    break;
+                case AppConstants.STAGE_GET_ERROR:
+                    showProgress(false);
+                    Toast.makeText(getBaseContext(), R.string.state_get_error, Toast.LENGTH_LONG).show();
                     break;
             }
             return false;

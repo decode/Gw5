@@ -4,7 +4,7 @@
         android:key="pref_auto_login"
         android:title="@string/pref_title_auto_login"
         android:summary="@string/pref_description_auto_login"
-        android:defaultValue="true" />
+        android:defaultValue="false" />
 
     <CheckBoxPreference
         android:key="pref_tail"

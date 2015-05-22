@@ -1,5 +1,6 @@
 package edu.guet.jjhome.guetw5.activity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,9 +13,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -29,7 +32,6 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import com.nispok.snackbar.listeners.EventListener;
 import com.tokenautocomplete.FilteredArrayAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
-import com.weiwangcn.betterspinner.library.BetterSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +48,10 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
     private static SharedPreferences sharedPref;
     private WebService web;
     private Handler handler;
-    private BetterSpinner spinner_urgency;
-    private BetterSpinner spinner_important;
-    private BetterSpinner spinner_limit;
-    private BetterSpinner spinner_trace;
+    private Spinner spinner_urgency;
+    private Spinner spinner_important;
+    private Spinner spinner_limit;
+    private Spinner spinner_trace;
     private Switch switchSms;
     @NotEmpty(message = "请指定至少一个联系人")
     private ContactsCompletionView completionView;
@@ -101,19 +103,24 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 //            web.makeCreatePage();
 //        }
 
-        spinner_urgency = (BetterSpinner) findViewById(R.id.spinnerUrgency);
-        spinner_important = (BetterSpinner) findViewById(R.id.spinnerImportant);
-        spinner_limit = (BetterSpinner) findViewById(R.id.spinnerLimit);
-        spinner_trace = (BetterSpinner) findViewById(R.id.spinnerTrace);
+        spinner_urgency = (Spinner) findViewById(R.id.spinnerUrgency);
+        spinner_important = (Spinner) findViewById(R.id.spinnerImportant);
+        spinner_limit = (Spinner) findViewById(R.id.spinnerLimit);
+        spinner_trace = (Spinner) findViewById(R.id.spinnerTrace);
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
-                R.array.urgency, android.R.layout.simple_dropdown_item_1line);
+                R.array.urgency, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
-                R.array.important, android.R.layout.simple_dropdown_item_1line);
+                R.array.important, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(this,
-                R.array.limit, android.R.layout.simple_dropdown_item_1line);
+                R.array.limit, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> adapter4 = ArrayAdapter.createFromResource(this,
-                R.array.trace, android.R.layout.simple_dropdown_item_1line);
+                R.array.trace, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinner_urgency.setAdapter(adapter1);
         spinner_important.setAdapter(adapter2);
         spinner_limit.setAdapter(adapter3);
@@ -134,6 +141,7 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
         completionView.setThreshold(1);
         completionView.allowDuplicates(false);
+        completionView.requestFocus();
 
         editSubject = (EditText) findViewById(R.id.editTitle);
         editBody = (EditText) findViewById(R.id.editContent);
@@ -173,6 +181,7 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
                 validator.validate();
                 break;
             default:
+//                hideKeyboard();
                 onBackPressed();
                 return true;
         }
@@ -197,23 +206,23 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
         String body = editBody.getText().toString();
         String sms = String.valueOf(switchSms.isChecked());
 
-        String urgency = spinner_urgency.getText().toString();
+        String urgency = spinner_urgency.getSelectedItem().toString();
         if (urgency.equals("紧急"))
             urgency = "1";
         else
             urgency = "0";
 
-        String important = spinner_important.getText().toString();
+        String important = spinner_important.getSelectedItem().toString();
         if (important.equals("重要"))
             important = "1";
         else
             important = "0";
-        String limit = spinner_limit.getText().toString();
+        String limit = spinner_limit.getSelectedItem().toString();
         if (limit.contains("不限制"))
             limit = "0";
         else
             limit = "1";
-        String trace = spinner_trace.getText().toString();
+        String trace = spinner_trace.getSelectedItem().toString();
         if (trace.contains("全部"))
             trace = "1";
         else
@@ -322,6 +331,7 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
 
     @Override
     public void onValidationSucceeded() {
+        hideKeyboard();
         makePost();
     }
 
@@ -337,6 +347,26 @@ public class CreateMessageActivity extends ActionBarActivity implements Validato
             } else {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void showKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+//            inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
     }
 

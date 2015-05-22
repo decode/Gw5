@@ -94,7 +94,7 @@
     <string name="help_title">帮助/反馈</string>
 
     <string name="dialog_about">关于本软件</string>
-    <string name="dialog_about_content">软件版本：0.9</string>
+    <string name="dialog_about_content">软件版本：0.93</string>
 
     <string name="action_reply">回复</string>
     <string name="action_show_web">网页</string>
@@ -102,5 +102,6 @@
     <string name="pref_tail">消息标题尾巴</string>
     <string name="pref_desc_tail">开启消息标题尾巴后，所有消息的标题后面都会附加用户自定义的信息，如发送人名字，用来标识发送者</string>
     <string name="pref_desc_message_tail">如果不设置尾巴信息，则默认为用户名</string>
+    <string name="hint_message_option">发送选项</string>
 
 </resources>

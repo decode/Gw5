@@ -126,6 +126,19 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        if (read_status.equals(AppConstants.MSG_STATUS_UNREAD)) {
+            List<Item> items = Item.getItemsByTypeAndStatus(msg_type, read_status);
+            if (items.size() > 0) {
+                itemAdapter.clear();
+                itemAdapter.addAll(items);
+                itemAdapter.notifyDataSetChanged();
+            }
+        }
+        super.onResume();
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
     }

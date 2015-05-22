@@ -54,6 +54,7 @@
         </activity>
         <activity
             android:name=".activity.CreateMessageActivity"
+            android:windowSoftInputMode="stateVisible"
             android:label="@string/title_activity_create_message" >
         </activity>
         <activity

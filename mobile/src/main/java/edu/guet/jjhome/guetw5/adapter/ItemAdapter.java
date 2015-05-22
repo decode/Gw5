@@ -66,7 +66,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 //            DateTime ct = DateTime.now(tz);
             DateTime dt = new DateTime(p.sent_at, AppConstants.TIME_ZONE);
             DateTime ct = DateTime.now(AppConstants.TIME_ZONE);
-            Log.d("message time compare:", dt.toString() + "/" + ct.toString());
+//            Log.d("message time compare:", dt.toString() + "/" + ct.toString());
             Duration duration = new Interval(dt, ct).toDuration();
             String date_text;
             if (duration.getStandardDays() < AppConstants.DAY_BEFORE) {
